@@ -34,9 +34,5 @@ export const menuData = [
             { label: "Międzychód", url: "#" },
             { label: "Grodzisk", url: "#" }
         ]
-    },
-    {
-        label: "Kontakt",
-        url: "#kontakt"
     }
 ];
