@@ -8,14 +8,36 @@
     transform: translateX(-50%);
     color: $black;
     z-index: 1000;
-    // top: 2.5rem;
-    top: -100%;
     opacity: 0;
 
-    // &.visible {
-    //     top: 2.5rem;
-    //     opacity: 1;
-    // }
+    // Enhanced transition properties for smooth state changes
+    transition:
+        top 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        opacity 0.5s ease;
+
+    // Will-change for better performance during animations
+    will-change: transform, opacity;
+
+    // Loading state (initial)
+    &.loading {
+        top: -100%;
+        opacity: 0;
+        transform: translateX(-50%) scale(0.95);
+    }
+
+    // Hero state (full header)
+    &.hero-visible {
+        top: 2.5rem;
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    // Scrolling state (compact header)
+    &.scrolling {
+        top: 2.5rem;
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
 
     &-logo {
         overflow: hidden;
@@ -34,13 +56,57 @@
             visibility: hidden;
         }
 
-        li a {
-            padding: 1.5rem 1.5rem;
-            border-radius: 2.5rem;
+        ul {
+            // Enhanced transition for nav items
+            transition: all 0.3s ease;
+        }
 
-            &:has(a[href="#kontakt"]) {
-                display: none !important;
-                visibility: hidden !important;
+        li {
+            // Enhanced transition properties for individual items
+            transition:
+                opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+            // Will-change for performance
+            will-change: opacity, transform;
+
+            // Default state
+            opacity: 1;
+            transform: scale(1);
+
+            // Hidden state (scrolling mode)
+            &.hidden {
+                opacity: 0;
+                transform: scale(0.8);
+                pointer-events: none;
+            }
+
+            // Hover enhancement
+            &:hover {
+                transform: scale(1.05) translateY(-1px);
+            }
+
+            a {
+                padding: 1.5rem 1.5rem;
+                border-radius: 2.5rem;
+                // Enhanced link styling
+                position: relative;
+                transition: all 0.2s ease;
+
+                &:has(a[href="#kontakt"]) {
+                    display: none !important;
+                    visibility: hidden !important;
+                }
+
+                // Focus state for accessibility
+                &:focus {
+                    outline: 2px solid $blue;
+                    outline-offset: 2px;
+                }
+
+                &:hover {
+                    background-color: rgba(0, 0, 0, 0.05);
+                }
             }
         }
 
@@ -57,11 +123,76 @@
         border-radius: 5rem;
         gap: 2rem;
         padding: 1rem 1rem 1rem 3.5rem;
+
+        // Enhanced transition for gap and background changes
+        transition:
+            gap 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            background-color 0.4s ease;
+
+        // Will-change for performance
+        will-change: gap, background-color;
+
+        // Hero/Contact sections state
+        &.hero-contact-bg {
+            background-color: $light;
+        }
+
+        // Other sections state
+        &.other-sections-bg {
+            background-color: $white;
+        }
+
+        // Scrolling state - compact gap
+        &.compact {
+            gap: 1rem;
+        }
+
+        // Hover state - bez transform żeby nie podnosił headera
+        &:hover {
+            // Usunięty transform - header ma mieć stałą pozycję
+        }
     }
 
     &-desktop-menu {
         display: none;
         visibility: hidden;
+    }
+
+    // ========================================
+    // LOGO & DOT ENHANCED ANIMATIONS
+    // ========================================
+
+    &-logo-text,
+    .dot {
+        // Enhanced transition properties
+        transition:
+            opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            visibility 0.3s ease;
+
+        // Will-change for smooth animations
+        will-change: opacity, transform, visibility;
+
+        // Default visible state
+        opacity: 1;
+        transform: scaleX(1) translateX(0);
+        visibility: visible;
+        position: relative;
+        z-index: 1;
+
+        // Hidden state
+        &.hidden {
+            opacity: 0;
+            transform: scaleX(0.7) translateX(-10px);
+            visibility: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        // Entrance animation state
+        &.entering {
+            animation: logoEntrance 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
     }
 }
 
@@ -82,19 +213,51 @@
     transition: all 0.3s ease;
 }
 
+// Background utility classes
 .bg-white {
-    background-color: #fff;
-}
-.bg-gray {
-    background-color: #f2f2f2;
-}
-.button.white {
-    background-color: #fff;
-}
-.button.gray {
-    background-color: #f2f2f2;
+    background-color: $white;
 }
 
+.bg-gray {
+    background-color: $light;
+}
+
+// Button state classes
+.button.white {
+    background-color: $white;
+
+    // Enhanced transition for button state changes
+    transition:
+        background-color 0.4s ease,
+        color 0.4s ease,
+        transform 0.2s ease;
+
+    // Will-change for performance
+    will-change: background-color, transform;
+
+    // Other sections state
+    &.gray-bg {
+        background-color: $light;
+        color: $black;
+    }
+
+    // Enhanced hover state
+    &:hover {
+        transform: scale(1.05) translateY(-1px);
+    }
+
+    // Active/click state
+    &:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
+}
+
+.button.gray {
+    background-color: $light;
+}
+
+// Legacy transition classes (keeping for compatibility)
 .header-logo-text,
 .button .dot {
     transition: all 0.3s ease;
@@ -103,4 +266,124 @@
 
 .header-wrap {
     transition: gap 0.25s ease;
+}
+
+// ========================================
+// KEYFRAME ANIMATIONS
+// ========================================
+
+@keyframes logoEntrance {
+    0% {
+        opacity: 0;
+        transform: scaleX(0.5) translateX(-20px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scaleX(1.1) translateX(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1) translateX(0);
+    }
+}
+
+@keyframes navItemEntrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+// ========================================
+// ACCESSIBILITY ENHANCEMENTS
+// ========================================
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+    .header {
+        &,
+        &-wrap,
+        &-logo-text,
+        .dot,
+        &-nav li,
+        .button {
+            transition: none !important;
+            animation: none !important;
+            will-change: auto !important;
+        }
+
+        // Simplified state changes for reduced motion
+        &-logo-text.hidden,
+        .dot.hidden {
+            display: none;
+        }
+
+        &-nav li.hidden {
+            display: none;
+        }
+    }
+}
+
+// ========================================
+// RESPONSIVE ENHANCEMENTS
+// ========================================
+
+@media #{$tablet} {
+    .header {
+        &-wrap {
+            gap: 1.5rem;
+
+            &.compact {
+                gap: 1rem;
+            }
+        }
+    }
+}
+
+@media #{$phone} {
+    .header {
+        &-wrap {
+            gap: 1rem;
+
+            &.compact {
+                gap: 0.5rem;
+            }
+        }
+
+        // Mobile menu specific styles remain from original
+        // Enhanced with better transitions
+        &-nav {
+            &.mobile-open {
+                transition:
+                    opacity 0.3s ease,
+                    visibility 0.3s ease;
+
+                li {
+                    animation: navItemEntrance 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+                    animation-delay: calc(var(--item-index, 0) * 0.1s);
+                }
+            }
+        }
+    }
+}
+
+// ========================================
+// HOVER ENHANCEMENT FOR DESKTOP
+// ========================================
+
+@media (hover: hover) {
+    .header {
+        &-wrap:hover {
+            .header-nav li.hidden {
+                opacity: 1;
+                transform: scale(1);
+                pointer-events: auto;
+                transition-delay: calc(var(--item-index, 0) * 0.05s);
+            }
+        }
+    }
 }
