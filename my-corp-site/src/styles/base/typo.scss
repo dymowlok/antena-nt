@@ -14,7 +14,7 @@ h2 {
     }
 
     @media #{$phone} {
-        font-size: 3.5rem;
+        font-size: 4rem;
     }
 }
 
@@ -35,6 +35,11 @@ p {
     font-size: 1.8rem;
     letter-spacing: -0.02em;
     font-weight: 400;
+
+    @media #{$pocket} {
+        font-size: 1.4rem;
+        line-height: 1.6;
+    }
 
     &.small {
         font-size: 1.4rem;

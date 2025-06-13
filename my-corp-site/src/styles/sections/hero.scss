@@ -2,7 +2,13 @@
 @use "../abstracts/colors" as *;
 
 .hero {
+    // height: 300vh;
+
     h1 {
+        @media #{$phone} {
+            max-width: 31.5rem;
+        }
+
         max-width: 83rem;
     }
 
@@ -10,9 +16,77 @@
         max-width: 57rem;
     }
 
+    &-wrap {
+        align-items: center;
+        padding-top: 15rem;
+        width: 100%;
+        position: relative;
+    }
+
+    &-buttons,
+    &-badge {
+        @media #{$phone} {
+            width: 100%;
+        }
+    }
+
+    &-buttons {
+        .button {
+            @media #{$phone} {
+                width: 100%;
+            }
+        }
+    }
+
     &-badge {
         padding: 1rem 1rem 1rem 2rem;
         background-color: $light;
         border-radius: 5rem;
+
+        @media #{$lap-and-up} {
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+        }
+
+        strong span {
+            margin-left: 0.4rem;
+            @media #{$phone} {
+                display: none;
+                visibility: hidden;
+            }
+        }
+
+        p {
+            line-height: 1;
+        }
+
+        .primary {
+            font-size: 1.4rem;
+        }
+
+        .secondary {
+            font-size: 1rem;
+        }
+
+        .svg-icon {
+            @media #{$phone} {
+                width: 2rem;
+                height: 2rem;
+
+                svg {
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
+    }
+
+    &-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    &-lottie {
+        position: sticky;
+        top: 0;
     }
 }

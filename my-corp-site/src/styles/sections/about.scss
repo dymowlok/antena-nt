@@ -1,0 +1,59 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+.about {
+    display: flex;
+    justify-content: space-between;
+    gap: 5rem;
+
+    &-asset-wrap {
+        position: sticky;
+        top: 11.5rem;
+        z-index: 2;
+
+        @media #{$pocket} {
+            width: 100%;
+            height: 50vh;
+            aspect-ratio: 1/1;
+        }
+
+        @media #{$lap-and-up} {
+            flex-shrink: 0;
+            width: calc(50% - 2.5rem);
+            flex-basis: calc(50% - 2.5rem);
+            height: calc(100vh - 14rem);
+        }
+    }
+
+    &-asset {
+        width: 100%;
+        height: 100%;
+        background-color: $orange;
+        border-radius: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    &-wrap {
+        @media #{$lap-and-up} {
+            width: calc(50% - 2.5rem);
+            flex-basis: calc(50% - 2.5rem);
+        }
+    }
+
+    &-section {
+        height: 100vh;
+        position: relative;
+    }
+
+    &-content {
+        position: sticky;
+        top: 0;
+        height: 100%;
+        justify-content: flex-end;
+
+        @media #{$lap-and-up} {
+            justify-content: center;
+        }
+    }
+}

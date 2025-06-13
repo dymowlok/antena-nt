@@ -1,4 +1,5 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
 
 .relative {
     position: relative;
@@ -83,9 +84,17 @@
 }
 
 section,
-.about-section,
 footer {
     min-height: 900px;
     width: 100%;
-    border: 1px dashed grey;
+    // border: 1px dashed grey;
+}
+
+[data-theme="orange"],
+[data-theme="indigo"],
+[data-theme="sky"],
+[data-theme="blue"] {
+    & * {
+        color: $white;
+    }
 }

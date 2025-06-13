@@ -1,20 +1,6 @@
 $radius: 1rem;
 $anim: 0.25s ease-out;
 
-$gaps: (
-    4: 0.25rem,
-    5: 0.3125rem,
-    10: 0.625rem,
-    15: 0.9375rem,
-    25: 1.5625rem,
-    35: 2.1875rem,
-    50: 3.125rem,
-    75: 4.6875rem,
-    100: 6.25rem,
-    125: 7.8125rem,
-    150: 9.375rem
-);
-
 $phone: "screen and (max-width: 639px)";
 $tablet: "screen and (min-width: 640px) and (max-width: 899px)";
 $pocket: "screen and (max-width: 899px)";
@@ -87,8 +73,10 @@ $gaps: (
     5: 0.5rem,
     10: 1rem,
     15: 1.5rem,
+    20: 2rem,
     25: 2.5rem,
     35: 3.5rem,
+    40: 4rem,
     50: 5rem,
     75: 7.5rem,
     100: 10rem,
