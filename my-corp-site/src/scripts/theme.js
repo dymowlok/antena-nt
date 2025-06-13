@@ -94,7 +94,8 @@ const headerDot = headerButton.querySelector('.dot');
 const headerNav = header.querySelector('.header-nav ul');
 const headerDesktopMenu = header.querySelector('.header-desktop-menu');
 const headerBgOverlay = header.querySelector('.header-bg-overlay');
-
+const heroSection = document.querySelector('#hero') || document.querySelector('main > section:first-child');
+let currentButtonTheme = 'light';
 let navItems = [];
 let desktopMenuTimeout = null;
 let isDesktopMenuOpen = false;
@@ -468,6 +469,11 @@ function updateHeaderUI() {
 
         headerButton.classList.remove('white', 'gray');
         headerButton.classList.add('black');
+        setTimeout(() => {
+            if (canChangeButtonTheme()) {
+                updateButtonTheme();
+            }
+        }, 150);
     }
 }
 
@@ -484,9 +490,7 @@ function showAllNavItems() {
             height: 'auto',
             pointerEvents: 'auto',
             display: 'block',
-            opacity: 0,
-            scale: 0.85,
-            y: -8
+            opacity: 1
         });
 
         gsap.to(li, {
@@ -513,7 +517,6 @@ function hideInactiveNavItems() {
         li.classList.remove('is-active');
         gsap.set(li, {
             opacity: 0,
-            scale: 0.75,
             position: 'absolute',
             overflow: 'hidden',
             width: 0,
@@ -609,6 +612,7 @@ function handleScrollDirection() {
 
     lastScroll = currentScroll;
     updateHeaderUI();
+    updateButtonThemeIntelligent();
 }
 
 // Desktop menu functionality
@@ -889,35 +893,37 @@ const sectionMap = [
 
 function updateNavHighlight() {
     const viewportHeight = window.innerHeight;
-    const viewportCenter = viewportHeight / 2;
+    const triggerLine = viewportHeight * 0.3;
     let activeSection = null;
-    let bestScore = -1;
+
+    const hero = document.getElementById('hero');
+    if (!activeSection && hero) {
+        const rect = hero.getBoundingClientRect();
+        const visibleTop = Math.max(0, rect.top);
+        const visibleBottom = Math.min(window.innerHeight, rect.bottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const heroVisibleRatio = visibleHeight / rect.height;
+
+        if (heroVisibleRatio >= 0.5) {
+            activeSection = 'hero';
+        }
+    }
+
 
     sectionMap.forEach(({ id, el }) => {
         if (!el) return;
 
         const rect = el.getBoundingClientRect();
+        const topBelowTrigger = rect.top <= triggerLine;
+        const bottomAboveTrigger = rect.bottom >= triggerLine;
 
-        const visibleTop = Math.max(0, rect.top);
-        const visibleBottom = Math.min(viewportHeight, rect.bottom);
-        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-        const sectionHeight = rect.height;
-        const visibilityPercent = sectionHeight > 0 ? visibleHeight / sectionHeight : 0;
-
-        const sectionCenter = rect.top + rect.height / 2;
-        const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
-        const maxDistance = viewportHeight;
-        const centerScore = 1 - (distanceFromCenter / maxDistance);
-
-        const combinedScore = (visibilityPercent * 0.7) + (centerScore * 0.3);
-
-        if (visibilityPercent >= 0.2 && combinedScore > bestScore) {
-            bestScore = combinedScore;
+        if (topBelowTrigger && bottomAboveTrigger) {
             activeSection = id;
         }
     });
 
     if (!activeSection) {
+        // fallback - najbliższa sekcja do środka viewportu
         let closestSection = null;
         let minDistance = Infinity;
 
@@ -926,7 +932,7 @@ function updateNavHighlight() {
 
             const rect = el.getBoundingClientRect();
             const sectionCenter = rect.top + rect.height / 2;
-            const distance = Math.abs(sectionCenter - viewportCenter);
+            const distance = Math.abs(sectionCenter - (viewportHeight / 2));
 
             if (distance < minDistance) {
                 minDistance = distance;
@@ -944,8 +950,10 @@ function updateNavHighlight() {
             hideDesktopMenu();
         }
 
-        if (HeaderStateManager.shouldShowCompactHeader()) {
+        if (!HeaderStateManager.shouldShowFullHeader()) {
             hideInactiveNavItems();
+        } else {
+            showAllNavItems();
         }
     }
 
@@ -961,10 +969,111 @@ function updateNavHighlight() {
     updateActiveNavStyling();
 }
 
+function updateButtonTheme() {
+    if (!headerButton || !heroSection) return;
+
+    const vh = window.innerHeight / 100;
+    const heroRect = heroSection.getBoundingClientRect();
+    const heroBottom = heroRect.bottom;
+
+    let newTheme = currentButtonTheme;
+
+    if (heroBottom <= 30 * vh) {
+        newTheme = 'black';
+    } else if (heroBottom <= window.innerHeight - 50 * vh) {
+        newTheme = 'light';
+    }
+
+    if (currentButtonTheme !== newTheme) {
+        animateButtonThemeChange(newTheme);
+    }
+}
+
+function animateButtonThemeChange(newTheme) {
+    const oldTheme = currentButtonTheme;
+
+    const hasImportantClasses = headerButton.classList.contains('white') ||
+        headerButton.classList.contains('gray');
+
+    if (hasImportantClasses && (newTheme === 'light' || newTheme === 'black')) {
+        return;
+    }
+
+    const tl = gsap.timeline();
+
+    tl.to(headerButton, {
+        scale: 0.96,
+        duration: 0.12,
+        ease: 'power2.inOut',
+        onComplete: () => {
+            headerButton.classList.remove(oldTheme);
+            headerButton.classList.add(newTheme);
+            currentButtonTheme = newTheme;
+            console.log(`🎨 Button theme: ${oldTheme} → ${newTheme}`);
+        }
+    })
+        .to(headerButton, {
+            scale: 1,
+            duration: 0.15,
+            ease: 'back.out(1.3)'
+        });
+}
+
+function canChangeButtonTheme() {
+    if (headerState === 'loading') return false;
+    if (isDesktopMenuOpen) return false;
+
+    const hasSystemClasses = headerButton.classList.contains('white') ||
+        headerButton.classList.contains('gray');
+
+    return !hasSystemClasses;
+}
+
+function updateButtonThemeIntelligent() {
+    if (!canChangeButtonTheme()) {
+        const vh = window.innerHeight / 100;
+        const heroRect = heroSection?.getBoundingClientRect();
+        if (heroRect) {
+            const heroBottom = heroRect.bottom;
+            let desiredTheme = currentButtonTheme;
+
+            if (heroBottom <= 30 * vh) {
+                desiredTheme = 'black';
+            } else if (heroBottom <= window.innerHeight - 50 * vh) {
+                desiredTheme = 'light';
+            }
+
+            headerButton.dataset.desiredTheme = desiredTheme;
+        }
+        return;
+    }
+
+    const desiredTheme = headerButton.dataset.desiredTheme;
+    if (desiredTheme && desiredTheme !== currentButtonTheme) {
+        animateButtonThemeChange(desiredTheme);
+        delete headerButton.dataset.desiredTheme;
+        return;
+    }
+
+    updateButtonTheme();
+}
+
 // Event listeners
 window.addEventListener('scroll', handleScrollDirection);
 window.addEventListener('scroll', updateNavHighlight);
-window.addEventListener('resize', updateNavHighlight);
+window.addEventListener('resize', () => {
+    updateNavHighlight();
+    updateButtonTheme();
+});
 ScrollTrigger.addEventListener('refresh', updateNavHighlight);
 
 ScrollTrigger.refresh();
+setTimeout(() => {
+    if (heroSection && headerButton) {
+        currentButtonTheme = headerButton.classList.contains('black') ? 'black' :
+            headerButton.classList.contains('white') ? 'white' :
+                headerButton.classList.contains('gray') ? 'gray' : 'light';
+        updateButtonTheme();
+        console.log('✅ Button theme handler initialized');
+    }
+}, 300);
