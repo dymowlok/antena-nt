@@ -1,4 +1,4 @@
-// main.js – FINALNA WERSJA (render + hover)
+// main.js – ORIGINAL VERSION (bez dodatkowych stylowań)
 
 import '../styles/main.scss';
 import './theme.js';
