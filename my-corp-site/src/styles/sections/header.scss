@@ -1,0 +1,106 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/variables" as *;
+
+.header {
+    position: fixed;
+    top: -100%;
+    left: 50%;
+    transform: translateX(-50%);
+    color: $black;
+    z-index: 1000;
+    // top: 2.5rem;
+    top: -100%;
+    opacity: 0;
+
+    // &.visible {
+    //     top: 2.5rem;
+    //     opacity: 1;
+    // }
+
+    &-logo {
+        overflow: hidden;
+    }
+
+    &-hamburger {
+        @media #{$lap-and-up} {
+            display: none;
+            visibility: hidden;
+        }
+    }
+
+    &-nav {
+        @media #{$pocket} {
+            display: none;
+            visibility: hidden;
+        }
+
+        li a {
+            padding: 1.5rem 1.5rem;
+            border-radius: 2.5rem;
+
+            &:has(a[href="#kontakt"]) {
+                display: none !important;
+                visibility: hidden !important;
+            }
+        }
+
+        a {
+            font-weight: 500;
+            font-size: 1.5rem;
+            line-height: 100%;
+            letter-spacing: -0.02em;
+        }
+    }
+
+    &-wrap {
+        background-color: $light;
+        border-radius: 5rem;
+        gap: 2rem;
+        padding: 1rem 1rem 1rem 3.5rem;
+    }
+
+    &-desktop-menu {
+        display: none;
+        visibility: hidden;
+    }
+}
+
+.dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    background-color: #88ed12;
+    display: block;
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+}
+
+.bg-white {
+    background-color: #fff;
+}
+.bg-gray {
+    background-color: #f2f2f2;
+}
+.button.white {
+    background-color: #fff;
+}
+.button.gray {
+    background-color: #f2f2f2;
+}
+
+.header-logo-text,
+.button .dot {
+    transition: all 0.3s ease;
+    will-change: opacity, transform;
+}
+
+.header-wrap {
+    transition: gap 0.25s ease;
+}

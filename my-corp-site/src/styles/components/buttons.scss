@@ -1,0 +1,87 @@
+@use "sass:color";
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.8rem;
+    border-radius: 5rem;
+    padding: 1.5rem 2.5rem;
+    transition: $anim;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1;
+    border: none;
+    appearance: none;
+    white-space: nowrap;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    position: relative;
+    overflow: hidden;
+    z-index: 0;
+    max-height: 4.5rem;
+
+    &::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        transition: $anim;
+        background-color: transparent;
+    }
+
+    &:hover::before {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &:hover {
+        transform: scale(1.04);
+        letter-spacing: -0.03em;
+    }
+}
+
+.button.white {
+    background-color: $white;
+    color: $black;
+
+    &:hover::before {
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+}
+
+.button.black {
+    background-color: $black;
+    color: $white;
+
+    &:hover::before {
+        background-color: rgba(255, 255, 255, 0.35);
+    }
+}
+
+.button.blue {
+    background-color: $blue;
+    color: $white;
+}
+
+.button.orange {
+    background-color: $orange;
+    color: $white;
+}
+
+.button.gray {
+    background-color: $light;
+    color: $black;
+
+    &:hover::before {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.button.small {
+    font-size: 1.3rem;
+    padding: 1rem 1.75rem;
+    max-height: 3.3rem;
+}

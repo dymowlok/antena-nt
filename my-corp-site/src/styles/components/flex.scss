@@ -1,0 +1,65 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
+
+.f {
+    display: flex;
+
+    &-i {
+        display: inline-flex;
+    }
+
+    @include create-responsive-classes("flex-direction", $flex-directions);
+    @include create-responsive-classes("justify-content", $justify-contents);
+    @include create-responsive-classes("align-items", $align-items);
+
+    &-fww {
+        flex-wrap: wrap;
+    }
+
+    &-fwr {
+        flex-wrap: wrap-reverse;
+    }
+
+    @each $breakpoint-short, $media-query in $short-breakpoints {
+        &-fww-#{$breakpoint-short} {
+            @media #{$media-query} {
+                flex-wrap: wrap;
+            }
+        }
+    }
+
+    &-col {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    &-cc {
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+
+        @each $breakpoint-short, $media-query in $short-breakpoints {
+            &-#{$breakpoint-short} {
+                @media #{$media-query} {
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                }
+            }
+        }
+    }
+
+    @each $gap, $value in $gaps {
+        &-g#{$gap} {
+            gap: $value;
+
+            @each $breakpoint-short, $media-query in $short-breakpoints {
+                &-#{$breakpoint-short} {
+                    @media #{$media-query} {
+                        gap: $value;
+                    }
+                }
+            }
+        }
+    }
+}

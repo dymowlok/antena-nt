@@ -1,0 +1,36 @@
+@use "../abstracts/colors" as *;
+@use "../abstracts/variables" as *;
+
+.white {
+    color: $white;
+}
+
+.black {
+    color: $black;
+}
+
+.gray {
+    color: $gray;
+}
+
+.t-center {
+    text-align: center;
+
+    &-m {
+        @media #{$phone} {
+            text-align: center;
+        }
+    }
+
+    &-p {
+        @media #{$pocket} {
+            text-align: center;
+        }
+    }
+
+    &-d {
+        @media #{$lap-and-up} {
+            text-align: center;
+        }
+    }
+}

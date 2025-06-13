@@ -1,0 +1,19 @@
+@use "variables" as *;
+
+@mixin create-responsive-classes($property, $values-map) {
+    @each $name, $value in $values-map {
+        &-#{$name} {
+            #{$property}: $value;
+        }
+
+        @each $breakpoint-short,
+            $media-query in ("m": $phone, "t": $tablet, "p": $pocket, "d": $lap-and-up, "w": $widescreen)
+        {
+            &-#{$name}-#{$breakpoint-short} {
+                @media #{$media-query} {
+                    #{$property}: $value;
+                }
+            }
+        }
+    }
+}

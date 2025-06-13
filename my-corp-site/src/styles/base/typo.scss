@@ -1,0 +1,50 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+h1,
+h2 {
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #000;
+    font-size: 7rem;
+
+    @media #{$tablet} {
+        font-size: 5rem;
+    }
+
+    @media #{$phone} {
+        font-size: 3.5rem;
+    }
+}
+
+h3,
+h4,
+h5,
+h6 {
+    font-weight: 900;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    color: #000;
+}
+
+p {
+    color: $gray;
+    line-height: 1.5;
+    font-size: 1.8rem;
+    letter-spacing: -0.02em;
+    font-weight: 400;
+
+    &.small {
+        font-size: 1.4rem;
+    }
+
+    &.tiny {
+        font-size: 1rem;
+    }
+}
+
+a {
+    transition: $anim;
+}

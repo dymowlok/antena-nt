@@ -1,0 +1,91 @@
+@use "../abstracts/variables" as *;
+
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.sticky {
+    position: sticky;
+}
+
+.rc {
+    border-radius: $radius;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.object-fit {
+    max-width: unset;
+    max-height: unset;
+    width: 100%;
+    height: 100%;
+
+    &.cover {
+        object-fit: cover;
+    }
+
+    &.contain {
+        object-fit: contain;
+    }
+}
+
+.page-width {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+
+    @include mq("tablet") {
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+
+    @include mq("lap-and-up") {
+        padding-left: 15rem;
+        padding-right: 15rem;
+    }
+}
+
+.section {
+    padding-top: 7.5rem;
+    padding-bottom: 7.5rem;
+
+    @include mq("phone") {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+    }
+
+    &.no-padding {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.max-50 {
+    max-width: 50rem;
+}
+
+.max-75 {
+    max-width: 75rem;
+}
+
+.max-100 {
+    max-width: 100rem;
+}
+
+section,
+.about-section,
+footer {
+    min-height: 900px;
+    width: 100%;
+    border: 1px dashed grey;
+}

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite App</title>
+  <link rel="icon" href="/favicon-light.svg" media="(prefers-color-scheme: light)">
+  <link rel="icon" href="/favicon-dark.svg" media="(prefers-color-scheme: dark)">
+  <link rel="stylesheet" href="/src/styles/main.scss" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <header class="white header" id="header">
+    <div class="header-bg-overlay"></div>
+    <div class="header-wrap f f-aic f-jcsb-p">
+      <button class="header-hamburger" id="openNav" aria-label="Otwórz menu"></button>
+      <a href="#" class="header-logo f f-aic f-g10">
+        <div class="header-logo-icon">
+          <svg width="27" height="25" viewBox="0 0 27 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M11.4608 0.154195C11.636 -0.125224 12.0645 -4.264e-05 12.0645 0.330564V21.9264L23.7136 17.9466V17.0925L22.9413 16.8838C22.4427 17.623 21.5181 18.0002 20.6135 17.7557C20.2323 17.6527 20.0061 17.2575 20.1082 16.8731L21.1992 12.7666C21.3014 12.3822 21.6932 12.154 22.0744 12.257C22.979 12.5015 23.5927 13.2944 23.6581 14.186L26.5646 14.9714C26.8779 15.0561 27.0638 15.3808 26.9798 15.6967L26.567 17.2505C26.4831 17.5665 26.1611 17.7539 25.8479 17.6693L24.824 17.3926V18.745H24.8182V18.7516L12.0645 23.1088V24.6694C12.0645 25 11.636 25.1252 11.4608 24.8458C9.36871 21.5094 8.20235 17.7674 7.96174 13.9787H6.36341V16.0982L2.92032 19.5707L3.26107 19.9144L0.695263 22.4053V24.2801H0V15.4651H0.695263V18.0624L1.06 17.6945L1.60708 18.2463L4.5062 15.3224V13.9787H3.67558V11.0213H4.5062V10.2819H6.36341V11.0213H7.96174C8.20235 7.23258 9.36871 3.49055 11.4608 0.154195Z"
+              fill="black" />
+          </svg>
+        </div>
+        <div class="header-logo-text">
+          <svg width="64" height="28" viewBox="0 0 64 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M53.1309 21.1025C53.468 21.1025 53.7805 21.1495 54.0684 21.2441C54.3581 21.3388 54.6144 21.4774 54.8379 21.6592C55.0614 21.8391 55.2436 22.0599 55.3838 22.3213C55.5258 22.5826 55.6165 22.8817 55.6562 23.2188H54.4121C54.3894 23.0578 54.3425 22.915 54.2725 22.79C54.2024 22.6631 54.1128 22.5548 54.0029 22.4658C53.8931 22.3768 53.766 22.3091 53.6221 22.2617C53.4801 22.2144 53.3258 22.1904 53.1592 22.1904C52.8581 22.1904 52.5955 22.2654 52.3721 22.415C52.1487 22.5628 51.9756 22.7786 51.8525 23.0625C51.7294 23.3447 51.668 23.6874 51.668 24.0908C51.668 24.5056 51.7294 24.8545 51.8525 25.1367C51.9775 25.4187 52.1517 25.6315 52.375 25.7754C52.5984 25.9193 52.857 25.9912 53.1504 25.9912C53.3152 25.9912 53.4682 25.9693 53.6084 25.9258C53.7503 25.8822 53.8766 25.8186 53.9863 25.7354C54.096 25.6502 54.1869 25.5468 54.2588 25.4258C54.3325 25.3047 54.3837 25.1668 54.4121 25.0117L55.6562 25.0166C55.6241 25.2836 55.5438 25.5419 55.415 25.79C55.2882 26.0362 55.1163 26.2571 54.9004 26.4521C54.6865 26.6452 54.4309 26.7985 54.1338 26.9121C53.8383 27.0238 53.504 27.0791 53.1309 27.0791C52.6121 27.0791 52.1482 26.9622 51.7393 26.7275C51.3321 26.4927 51.0092 26.1521 50.7725 25.707C50.5378 25.262 50.4209 24.7232 50.4209 24.0908C50.4209 23.4565 50.5398 22.9167 50.7783 22.4717C51.017 22.0266 51.3409 21.6871 51.75 21.4541C52.1591 21.2193 52.6195 21.1025 53.1309 21.1025Z"
+              fill="black" />
+            <path
+              d="M3.625 25.0908H3.69336L5.2959 21.1816H6.8125V27H5.61914V23.2129H5.57129L4.06543 26.9717H3.25293L1.74707 23.1992H1.69922V27H0.505859V21.1816H2.02246L3.625 25.0908Z"
+              fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M12.9502 27H11.6318L11.2012 25.6729H9.10059L8.66895 27H7.35059L9.35938 21.1816H10.9443L12.9502 27ZM9.41309 24.7129H10.8896L10.1748 22.5117H10.1289L9.41309 24.7129Z"
+              fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M15.7861 21.1816C16.2254 21.1817 16.6006 21.2608 16.9111 21.418C17.2233 21.5732 17.4612 21.7934 17.624 22.0791C17.7887 22.3631 17.871 22.6977 17.8711 23.082C17.8711 23.4682 17.7876 23.8008 17.6211 24.0791C17.4544 24.3556 17.2128 24.5681 16.8965 24.7158C16.879 24.724 16.8607 24.7305 16.8428 24.7383L18.0781 27H16.7207L15.6182 24.9375H14.7207V27H13.4902V21.1816H15.7861ZM14.7207 23.9492H15.5557C15.7903 23.9492 15.9854 23.9168 16.1406 23.8525C16.2959 23.7882 16.4115 23.6912 16.4873 23.5625C16.565 23.4337 16.6045 23.2733 16.6045 23.082C16.6044 22.889 16.5649 22.7262 16.4873 22.5938C16.4115 22.4612 16.2949 22.3611 16.1377 22.293C15.9824 22.223 15.7864 22.1875 15.5498 22.1875H14.7207V23.9492Z"
+              fill="black" />
+            <path
+              d="M22.501 22.1963H19.8105V23.582H22.2988V24.5967H19.8105V25.9854H22.5117V27H18.5801V21.1816H22.501V22.1963Z"
+              fill="black" />
+            <path
+              d="M24.5488 23.7471H24.626L26.7197 21.1816H28.1934L26.0352 23.7871L28.2197 27H26.748L25.1543 24.6084L24.5488 25.3467V27H23.3184V21.1816H24.5488V23.7471Z"
+              fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M32.6611 21.1816C33.1005 21.1816 33.4755 21.2608 33.7861 21.418C34.0986 21.5732 34.3371 21.7932 34.5 22.0791C34.6647 22.3631 34.747 22.6977 34.7471 23.082C34.7471 23.4682 34.6635 23.8008 34.4971 24.0791C34.3304 24.3556 34.0886 24.5681 33.7725 24.7158C33.755 24.724 33.7366 24.7306 33.7188 24.7383L34.9541 27H33.5957L32.4941 24.9375H31.5957V27H30.3662V21.1816H32.6611ZM31.5957 23.9492H32.4316C32.6663 23.9492 32.8614 23.9169 33.0166 23.8525C33.1719 23.7881 33.2875 23.6913 33.3633 23.5625C33.4409 23.4337 33.4795 23.2733 33.4795 23.082C33.4794 22.889 33.4409 22.7262 33.3633 22.5938C33.2875 22.4612 33.1708 22.3611 33.0137 22.293C32.8584 22.2229 32.6625 22.1875 32.4258 22.1875H31.5957V23.9492Z"
+              fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M40.7402 27H39.4219L38.9912 25.6729H36.8906L36.459 27H35.1406L37.1494 21.1816H38.7344L40.7402 27ZM37.2031 24.7129H38.6797L37.9648 22.5117H37.9189L37.2031 24.7129Z"
+              fill="black" />
+            <path
+              d="M44.3994 25.0908H44.4678L46.0703 21.1816H47.5869V27H46.3936V23.2129H46.3457L44.8398 26.9717H44.0273L42.5215 23.1992H42.4736V27H41.2803V21.1816H42.7979L44.3994 25.0908Z"
+              fill="black" />
+            <path d="M49.6709 27H48.4404V21.1816H49.6709V27Z" fill="black" />
+            <path
+              d="M57.6084 23.7471H57.6855L59.7793 21.1816H61.2539L59.0947 23.7871L61.2793 27H59.8076L58.2139 24.6084L57.6084 25.3467V27H56.3789V21.1816H57.6084V23.7471Z"
+              fill="black" />
+            <path d="M62.9639 27H61.7344V21.1816H62.9639V27Z" fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M10.6289 17H7.81641L7.21875 13.25H3.63281L3.02344 17H0.199219L3.03516 0.265625H7.79297L10.6289 17ZM4.39453 7.07422L3.87891 10.7656H6.96094L6.45703 7.07422L5.84766 2.75H5.00391L4.39453 7.07422Z"
+              fill="black" />
+            <path
+              d="M17.25 5.59766L18.8906 14.5156H19.5352L19.0312 7.21484L18.832 0.265625H21.4922V17H17.0859L15.6445 11.4219L14.3086 2.73828H13.6406L14.0977 10.6016L14.3203 17H11.6602V0.265625H15.8906L17.25 5.59766Z"
+              fill="black" />
+            <path d="M31.5703 2.75H28.3945V17H25.6523V2.75H22.4648V0.265625H31.5703V2.75Z" fill="black" />
+            <path
+              d="M40.7344 2.75H35.2852V7.26172H40.418V9.74609H35.2852V14.5156H40.7344V17H32.543V0.265625H40.7344V2.75Z"
+              fill="black" />
+            <path
+              d="M47.625 5.59766L49.2656 14.5156H49.9102L49.4062 7.21484L49.207 0.265625H51.8672V17H47.4609L46.0195 11.4219L44.6836 2.73828H44.0156L44.4727 10.6016L44.6953 17H42.0352V0.265625H46.2656L47.625 5.59766Z"
+              fill="black" />
+            <path fill-rule="evenodd" clip-rule="evenodd"
+              d="M63.3398 17H60.5273L59.9297 13.25H56.3438L55.7344 17H52.9102L55.7461 0.265625H60.5039L63.3398 17ZM57.1055 7.07422L56.5898 10.7656H59.6719L59.168 7.07422L58.5586 2.75H57.7148L57.1055 7.07422Z"
+              fill="black" />
+          </svg>
+
+        </div>
+      </a>
+      <nav class="header-nav">
+        <ul class="f f-aic"></ul>
+      </nav>
+      <a class="button white" href="#kontakt">
+        <span class="dot"></span>
+        Kontakt
+      </a>
+    </div>
+
+    <div class="header-desktop-menu"></div>
+  </header>
+
+  <main>
+    <section data-theme="white" class="hero f f-cc" id="hero">
+      <div class="hero-content f f-col f-cc f-g50">
+        <div class="hero-content-text f f-cc f-col f-g35-d f-g25-p">
+          <h1 class="primary">Montaż anten&nbsp;i&nbsp;instalacji niskonapięciowych</h1>
+          <p class="secondary">Ponad 28 lat doświadczenia w montażu anten RTV/SAT, monitoringu, domofonów i wzmacniaczy
+            sygnału. Szybko, solidnie i z gwarancją.</p>
+        </div>
+        <div class="hero-buttons f f-fdc-p f-cc f-aic-d f-g10">
+          <a href="#uslugi" class="button black">Poznaj ofertę</a>
+          <a href="#kontakt" class="button blue">Skontaktuj się</a>
+        </div>
+        <div class="hero-badge f f-fdc-p f-aic-d f-g25">
+          <div class="badge star f f-g10">
+            <div class="svg-icon"></div>
+            <div class="f f-col f-g4">
+              <p class="primary"><strong>5.0 ocena Klientów</strong></p>
+              <p class="secondary">17 opinii</p>
+            </div>
+          </div>
+          <a href="" target="_blank" rel="nofollow" class="button white small">Umów przez Fixly.pl</a>
+        </div>
+      </div>
+
+      <div class="hero-lottie">
+        <!-- Lottie animacja na scroll -->
+      </div>
+
+      <div class="lines lines-hero">
+        <div id="hero-line-1"></div>
+        <div id="hero-line-2"></div>
+        <div id="hero-line-3"></div>
+        <div id="hero-line-4"></div>
+        <div id="hero-line-5"></div>
+      </div>
+    </section>
+
+    <section data-theme="light" class="services f f-cc" id="uslugi">uslugi</section>
+    <section class="about f f-col" id="o-firmie">
+      <div class="about-section f f-cc" data-theme="indigo">indigo</div>
+      <div class="about-section f f-cc" data-theme="sky">sky</div>
+      <div class="about-section f f-cc" data-theme="blue">blue</div>
+    </section>
+    <section data-theme="orange" class="testimonials  f f-cc" id="opinie">opinie</section>
+    <section data-theme="light" class="locations  f f-cc" id="lokalizacje">lokalizacje</section>
+    <section data-theme="white" class="contact  f f-cc" id="kontakt">kontakt</section>
+  </main>
+
+  <footer data-theme="black"></footer>
+
+  <script type="module" src="/src/scripts/main.js"></script>
+</body>
+
+</html>
