@@ -22,7 +22,7 @@ const HeaderStateManager = {
 
     canShowDesktopMenu() {
         const allowedSections = ['hero', 'kontakt'];
-        const isAtTopOrBottom = isAtTop() || isAtBottom() || currentActiveSection === 'kontakt';
+        const isAtTopOrBottom = this.shouldShowFullHeader();
         const isFullHeaderState = headerState === this.states.HERO;
 
         // KRYTYCZNE: Sprawdź czy wszystkie li są widoczne
@@ -51,8 +51,46 @@ const HeaderStateManager = {
         return visibleCount === navItems.length && visibleCount > 1;
     },
 
+    // POPRAWKA: Nowa logika sprawdzania czy pokazać full header
     shouldShowFullHeader() {
-        return isAtTop() || isAtBottom() || currentActiveSection === 'kontakt';
+        // Sprawdź widoczność pierwszej sekcji (hero)
+        const firstSection = document.querySelector('#hero');
+        if (firstSection) {
+            const rect = firstSection.getBoundingClientRect();
+            const visibleHeight = Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top));
+            const visibilityRatio = visibleHeight / window.innerHeight;
+
+            if (visibilityRatio >= 0.5) {
+                return true;
+            }
+        }
+
+        // Sprawdź widoczność ostatniej sekcji
+        const lastSection = document.querySelector('main > section:last-child, footer');
+        if (lastSection) {
+            const rect = lastSection.getBoundingClientRect();
+            const visibleHeight = Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top));
+            const visibilityRatio = visibleHeight / window.innerHeight;
+
+            if (visibilityRatio >= 0.5) {
+                return true;
+            }
+        }
+
+        // Sprawdź widoczność sekcji kontakt
+        const kontaktSection = document.querySelector('#kontakt');
+        if (kontaktSection) {
+            const rect = kontaktSection.getBoundingClientRect();
+            const visibleHeight = Math.max(0, Math.min(window.innerHeight, rect.bottom) - Math.max(0, rect.top));
+            const visibilityRatio = visibleHeight / window.innerHeight;
+
+            if (visibilityRatio >= 0.5) {
+                return true;
+            }
+        }
+
+        // Fallback - sprawdź czy jesteśmy na samej górze lub dole
+        return isAtTop() || isAtBottom();
     },
 
     shouldShowCompactHeader() {
@@ -88,14 +126,13 @@ const themeColors = {
 const body = document.body;
 const header = document.querySelector('#header');
 const headerWrap = header.querySelector('.header-wrap');
-const headerLogoText = header.querySelector('.header-logo-text');
 const headerButton = header.querySelector('a.button[href="#kontakt"]');
 const headerDot = headerButton.querySelector('.dot');
 const headerNav = header.querySelector('.header-nav ul');
 const headerDesktopMenu = header.querySelector('.header-desktop-menu');
 const headerBgOverlay = header.querySelector('.header-bg-overlay');
 const heroSection = document.querySelector('#hero') || document.querySelector('main > section:first-child');
-let currentButtonTheme = 'light';
+let currentButtonTheme = 'white';
 let navItems = [];
 let desktopMenuTimeout = null;
 let isDesktopMenuOpen = false;
@@ -151,9 +188,9 @@ headerWrap.addEventListener('mouseleave', () => {
     }, 100);
 });
 
-// Initialize
+// Initialize - POPRAWKA: ustaw gap na stałe 1rem
 initializeNavItems();
-headerWrap.style.gap = '2rem';
+headerWrap.style.gap = '1rem';
 gsap.set(header, { top: '-100%', opacity: 0 });
 
 // ONLY essential CSS fixes - NO UI styling changes + REMOVED backdrop-filter
@@ -281,6 +318,10 @@ async function initializeHeader() {
         onComplete: () => {
             headerState = HeaderStateManager.states.HERO;
             updateNavHighlight();
+            // POPRAWKA: Inicjalizuj button theme od razu
+            setTimeout(() => {
+                updateButtonTheme();
+            }, 100);
         }
     });
 }
@@ -353,7 +394,7 @@ document.querySelectorAll('[data-theme]').forEach((section, index, arr) => {
     });
 });
 
-// Header state management
+// POPRAWKA: Uproszczona funkcja updateHeaderUI - bez gap i logo
 function updateHeaderUI() {
     const shouldBeFullHeader = shouldShowFullHeader();
     const currentlyFullHeader = headerState === HeaderStateManager.states.HERO;
@@ -362,123 +403,32 @@ function updateHeaderUI() {
 
     if (isHeaderHovered && !shouldBeFullHeader) return;
 
-    gsap.killTweensOf([headerLogoText, headerDot, headerWrap, ...navItems]);
+    gsap.killTweensOf([headerDot, headerWrap, ...navItems]);
 
     if (shouldBeFullHeader) {
+        console.log('🔄 Switching to FULL header');
         headerState = HeaderStateManager.states.HERO;
 
-        if (isAtTop()) {
-            gsap.set([headerLogoText, headerDot], {
-                clearProps: "all",
-                position: 'relative',
-                visibility: 'visible',
-                display: 'block',
-                zIndex: 1,
-                pointerEvents: 'auto',
-                opacity: 0,
-                scaleX: 0.6,
-                x: -8
-            });
-        } else {
-            gsap.set([headerLogoText, headerDot], {
-                visibility: 'hidden',
-                position: 'absolute',
-                display: 'none',
-                zIndex: -1,
-                pointerEvents: 'none',
-                opacity: 0
-            });
-        }
-
-        const tl = gsap.timeline();
-
-        tl.to(headerWrap, {
-            gap: '2rem',
-            duration: 0.3,
-            ease: 'power2.out'
-        });
-
-        if (isAtTop()) {
-            tl.to([headerLogoText, headerDot], {
-                opacity: 1,
-                scaleX: 1,
-                x: 0,
-                duration: 0.25,
-                ease: 'back.out(1.4)',
-                onComplete: () => {
-                    gsap.set([headerLogoText, headerDot], {
-                        position: 'relative',
-                        visibility: 'visible',
-                        display: 'block',
-                        zIndex: 1,
-                        pointerEvents: 'auto',
-                        opacity: 1,
-                        scaleX: 1,
-                        x: 0
-                    });
-                }
-            }, "<0.1");
-        }
-
-        tl.call(() => {
-            showAllNavItems();
-        }, null, 0.1);
-
-        headerButton.classList.remove('black', 'gray', 'white');
-        if (isAtTop()) {
-            headerButton.classList.add('white');
-        } else {
-            headerButton.classList.add('black');
-        }
+        // Zawsze pokaż wszystkie nav items przy full header
+        showAllNavItems();
 
     } else {
+        console.log('🔄 Switching to COMPACT header');
         headerState = HeaderStateManager.states.SCROLLING;
 
         if (isDesktopMenuOpen) {
             hideDesktopMenu();
         }
 
-        const tl = gsap.timeline();
-
-        tl.to(headerWrap, {
-            gap: '1rem',
-            duration: 0.25,
-            ease: 'power2.out'
-        })
-            .to([headerLogoText, headerDot], {
-                opacity: 0,
-                scaleX: 0.5,
-                x: -12,
-                duration: 0.2,
-                ease: 'power2.in',
-                onComplete: () => {
-                    gsap.set([headerLogoText, headerDot], {
-                        visibility: 'hidden',
-                        position: 'absolute',
-                        display: 'none',
-                        zIndex: -1,
-                        pointerEvents: 'none'
-                    });
-                }
-            }, "<")
-            .call(() => {
-                if (!isHeaderHovered) {
-                    hideInactiveNavItems();
-                }
-            }, null, "<");
-
-        headerButton.classList.remove('white', 'gray');
-        headerButton.classList.add('black');
-        setTimeout(() => {
-            if (canChangeButtonTheme()) {
-                updateButtonTheme();
-            }
-        }, 150);
+        if (!isHeaderHovered) {
+            hideInactiveNavItems();
+        }
     }
 }
 
 // Navigation item management
 function showAllNavItems() {
+    console.log('👥 Showing ALL nav items');
     navItems = headerNav.querySelectorAll('li');
 
     navItems.forEach((li, index) => {
@@ -505,7 +455,13 @@ function showAllNavItems() {
 }
 
 function hideInactiveNavItems() {
-    if (isHeaderHovered && !HeaderStateManager.shouldShowCompactHeader()) return;
+    // POPRAWKA: Nie ukrywaj nav items jeśli header powinien być pełny
+    if (isHeaderHovered || shouldShowFullHeader()) {
+        console.log('❌ Cannot hide nav items - header should be full or hovered');
+        return;
+    }
+
+    console.log('👤 Hiding inactive nav items, showing only:', currentActiveSection);
 
     navItems = headerNav.querySelectorAll('li');
     if (navItems.length === 0) {
@@ -592,6 +548,8 @@ function handleScrollDirection() {
     const scrollingDown = currentScroll > lastScroll + 1;
     const scrollingUp = currentScroll < lastScroll - 1;
 
+    // POPRAWKA: Najpierw update header UI, potem nav highlight
+    updateHeaderUI();
     updateNavHighlight();
 
     if (scrollingUp && !isAtTop()) {
@@ -611,8 +569,9 @@ function handleScrollDirection() {
     }
 
     lastScroll = currentScroll;
-    updateHeaderUI();
-    updateButtonThemeIntelligent();
+
+    // POPRAWKA: Zaktualizuj button theme po każdym scrollu
+    updateButtonTheme();
 }
 
 // Desktop menu functionality
@@ -909,7 +868,6 @@ function updateNavHighlight() {
         }
     }
 
-
     sectionMap.forEach(({ id, el }) => {
         if (!el) return;
 
@@ -945,14 +903,21 @@ function updateNavHighlight() {
 
     if (activeSection && activeSection !== currentActiveSection) {
         currentActiveSection = activeSection;
+        console.log('📍 Active section changed to:', activeSection);
 
         if (isDesktopMenuOpen && !HeaderStateManager.canShowDesktopMenu()) {
             hideDesktopMenu();
         }
 
-        if (!HeaderStateManager.shouldShowFullHeader()) {
+        // POPRAWKA: Nie nadpisuj nav items jeśli header powinien być pełny
+        // Sprawdź czy aktualizować wyświetlanie nav items
+        const shouldShowFull = shouldShowFullHeader();
+        console.log('🔍 Should show full header?', shouldShowFull);
+
+        if (!shouldShowFull && headerState === HeaderStateManager.states.SCROLLING) {
             hideInactiveNavItems();
-        } else {
+        } else if (shouldShowFull && headerState === HeaderStateManager.states.HERO) {
+            // Upewnij się, że wszystkie nav items są widoczne
             showAllNavItems();
         }
     }
@@ -969,35 +934,53 @@ function updateNavHighlight() {
     updateActiveNavStyling();
 }
 
+// POPRAWKA: Uproszczona i niezawodna funkcja button theme z zarządzaniem dot
 function updateButtonTheme() {
     if (!headerButton || !heroSection) return;
 
-    const vh = window.innerHeight / 100;
     const heroRect = heroSection.getBoundingClientRect();
-    const heroBottom = heroRect.bottom;
+    const heroVisible = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
 
-    let newTheme = currentButtonTheme;
-
-    if (heroBottom <= 30 * vh) {
-        newTheme = 'black';
-    } else if (heroBottom <= window.innerHeight - 50 * vh) {
-        newTheme = 'light';
-    }
-
-    if (currentButtonTheme !== newTheme) {
-        animateButtonThemeChange(newTheme);
+    // Jeśli sekcja hero jest widoczna w viewporcie
+    if (heroVisible) {
+        if (currentButtonTheme !== 'white') {
+            animateButtonThemeChange('white');
+        }
+        // Pokaż dot gdy hero jest widoczne
+        if (headerDot) {
+            gsap.to(headerDot, {
+                display: 'block',
+                opacity: 1,
+                duration: 0.3,
+                ease: 'power2.out'
+            });
+        }
+    } else {
+        // Hero nie jest widoczne - button ma być black
+        if (currentButtonTheme !== 'black') {
+            animateButtonThemeChange('black');
+        }
+        // Ukryj dot gdy hero nie jest widoczne
+        if (headerDot) {
+            gsap.to(headerDot, {
+                opacity: 0,
+                duration: 0.2,
+                ease: 'power2.in',
+                onComplete: () => {
+                    gsap.set(headerDot, { display: 'none' });
+                }
+            });
+        }
     }
 }
 
 function animateButtonThemeChange(newTheme) {
     const oldTheme = currentButtonTheme;
 
-    const hasImportantClasses = headerButton.classList.contains('white') ||
-        headerButton.classList.contains('gray');
+    // Nie zmieniaj jeśli to ten sam theme
+    if (oldTheme === newTheme) return;
 
-    if (hasImportantClasses && (newTheme === 'light' || newTheme === 'black')) {
-        return;
-    }
+    console.log(`🎨 Button theme change: ${oldTheme} → ${newTheme}`);
 
     const tl = gsap.timeline();
 
@@ -1009,7 +992,6 @@ function animateButtonThemeChange(newTheme) {
             headerButton.classList.remove(oldTheme);
             headerButton.classList.add(newTheme);
             currentButtonTheme = newTheme;
-            console.log(`🎨 Button theme: ${oldTheme} → ${newTheme}`);
         }
     })
         .to(headerButton, {
@@ -1019,48 +1001,8 @@ function animateButtonThemeChange(newTheme) {
         });
 }
 
-function canChangeButtonTheme() {
-    if (headerState === 'loading') return false;
-    if (isDesktopMenuOpen) return false;
-
-    const hasSystemClasses = headerButton.classList.contains('white') ||
-        headerButton.classList.contains('gray');
-
-    return !hasSystemClasses;
-}
-
-function updateButtonThemeIntelligent() {
-    if (!canChangeButtonTheme()) {
-        const vh = window.innerHeight / 100;
-        const heroRect = heroSection?.getBoundingClientRect();
-        if (heroRect) {
-            const heroBottom = heroRect.bottom;
-            let desiredTheme = currentButtonTheme;
-
-            if (heroBottom <= 30 * vh) {
-                desiredTheme = 'black';
-            } else if (heroBottom <= window.innerHeight - 50 * vh) {
-                desiredTheme = 'light';
-            }
-
-            headerButton.dataset.desiredTheme = desiredTheme;
-        }
-        return;
-    }
-
-    const desiredTheme = headerButton.dataset.desiredTheme;
-    if (desiredTheme && desiredTheme !== currentButtonTheme) {
-        animateButtonThemeChange(desiredTheme);
-        delete headerButton.dataset.desiredTheme;
-        return;
-    }
-
-    updateButtonTheme();
-}
-
 // Event listeners
 window.addEventListener('scroll', handleScrollDirection);
-window.addEventListener('scroll', updateNavHighlight);
 window.addEventListener('resize', () => {
     updateNavHighlight();
     updateButtonTheme();
@@ -1068,12 +1010,32 @@ window.addEventListener('resize', () => {
 ScrollTrigger.addEventListener('refresh', updateNavHighlight);
 
 ScrollTrigger.refresh();
+
+// POPRAWKA: Inicjalizacja button theme z dot management
 setTimeout(() => {
     if (heroSection && headerButton) {
-        currentButtonTheme = headerButton.classList.contains('black') ? 'black' :
-            headerButton.classList.contains('white') ? 'white' :
-                headerButton.classList.contains('gray') ? 'gray' : 'light';
-        updateButtonTheme();
-        console.log('✅ Button theme handler initialized');
+        // Ustaw początkowy theme based na aktualnej pozycji
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroVisible = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
+
+        if (heroVisible) {
+            currentButtonTheme = 'white';
+            headerButton.classList.remove('light', 'black', 'gray');
+            headerButton.classList.add('white');
+            // Pokaż dot
+            if (headerDot) {
+                gsap.set(headerDot, { display: 'block', opacity: 1 });
+            }
+        } else {
+            currentButtonTheme = 'black';
+            headerButton.classList.remove('white', 'light', 'gray');
+            headerButton.classList.add('black');
+            // Ukryj dot
+            if (headerDot) {
+                gsap.set(headerDot, { display: 'none', opacity: 0 });
+            }
+        }
+
+        console.log('✅ Button theme handler initialized with theme:', currentButtonTheme);
     }
 }, 300);

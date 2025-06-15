@@ -39,49 +39,48 @@
 
     &:hover {
         transform: scale(1.04);
-        letter-spacing: -0.03em;
     }
-}
 
-.button.white {
-    background-color: $white;
-    color: $black;
+    &.white {
+        background-color: $white;
+        color: $black;
 
-    &:hover::before {
-        background-color: rgba(0, 0, 0, 0.06);
+        &:hover::before {
+            background-color: rgba(0, 0, 0, 0.06);
+        }
     }
-}
 
-.button.black {
-    background-color: $black;
-    color: $white;
+    &.black {
+        background-color: $black;
+        color: $white;
 
-    &:hover::before {
-        background-color: rgba(255, 255, 255, 0.35);
+        &:hover::before {
+            background-color: rgba(255, 255, 255, 0.35);
+        }
     }
-}
 
-.button.blue {
-    background-color: $blue;
-    color: $white;
-}
-
-.button.orange {
-    background-color: $orange;
-    color: $white;
-}
-
-.button.gray {
-    background-color: $light;
-    color: $black;
-
-    &:hover::before {
-        background-color: rgba(0, 0, 0, 0.04);
+    &.blue {
+        background-color: $blue;
+        color: $white;
     }
-}
 
-.button.small {
-    font-size: 1.3rem;
-    padding: 1rem 1.75rem;
-    max-height: 3.3rem;
+    &.orange {
+        background-color: $orange;
+        color: $white;
+    }
+
+    &.gray {
+        background-color: $light;
+        color: $black;
+
+        &:hover::before {
+            background-color: rgba(0, 0, 0, 0.04);
+        }
+    }
+
+    &.small {
+        font-size: 1.3rem;
+        padding: 1rem 1.75rem;
+        max-height: 3.3rem;
+    }
 }
