@@ -1,0 +1,35 @@
+// Styles for integrated text reveal - optimized for descenders
+.reveal-line {
+    display: block;
+    will-change: transform, opacity;
+    transform-origin: bottom left;
+}
+
+.reveal-line-wrapper {
+    // Używamy clip-path zamiast overflow: hidden
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    line-height: inherit;
+    position: relative;
+
+    // Backup dla starszych przeglądarek
+    overflow: hidden;
+
+    // Minimalnie zwiększ wysokość dla descenders bez wpływu na spacing
+    min-height: 1.15em;
+}
+
+// Zapobiegaj flash podczas ładowania
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    &[data-animated="true"] {
+        .reveal-line {
+            backface-visibility: hidden;
+            perspective: 1000px;
+        }
+    }
+}

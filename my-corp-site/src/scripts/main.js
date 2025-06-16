@@ -2,8 +2,13 @@
 
 import '../styles/main.scss';
 import './theme.js';
-import './headerButtonSwitch.js';
 import { menuData } from '../data/menu.js';
+
+import { loadHeroLottie } from './lottie.js';
+loadHeroLottie();
+
+import { setupAboutSection } from './about.js';
+setupAboutSection();
 
 function renderMenu(data) {
     const nav = document.querySelector('.header-nav ul');
@@ -250,11 +255,27 @@ export class ButtonThemeSwitcher {
     }
 }
 
-import { setupTextReveal } from './textReveal.js';
-setupTextReveal();
+// import { setupTextReveal } from './textReveal.js';
+// setupTextReveal();
 
-import { loadHeroLottie } from './lottie.js';
-loadHeroLottie();
 
-import { setupAboutSection } from './about.js';
-setupAboutSection();
+import {
+    setupIntegratedTextReveal,
+    reinitializeTextReveal,
+    debugTriggerPoints
+} from './integratedTextReveal.js';
+
+// Na końcu pliku, po innych inicjalizacjach:
+setupIntegratedTextReveal();
+
+// Debug funkcja (możesz usunąć później)
+window.debugTriggers = debugTriggerPoints;
+
+// Dodaj obsługę resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        reinitializeTextReveal();
+    }, 300);
+});

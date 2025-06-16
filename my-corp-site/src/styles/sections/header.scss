@@ -114,6 +114,7 @@
     border-radius: 50%;
     background-color: #88ed12;
     display: block;
+    animation: dot-blink 5s infinite ease-in-out;
 }
 
 // Responsive
@@ -130,5 +131,29 @@
         &-wrap {
             gap: 1rem;
         }
+    }
+}
+
+@keyframes dot-blink {
+    0% {
+        opacity: 1;
+    }
+    5% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    15% {
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    25% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
     }
 }
