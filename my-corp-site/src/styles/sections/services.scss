@@ -1,0 +1,104 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+.services {
+    padding: 7.5rem 2.5rem;
+
+    @media #{$lap-and-up} {
+        padding: 15rem 0;
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+
+    &-slider {
+        position: relative;
+        width: 100%;
+
+        @media #{$pocket} {
+            height: 800vh;
+        }
+
+        @media #{$lap-and-up} {
+            overflow-x: scroll;
+            padding: 0 5rem;
+            align-items: stretch;
+        }
+    }
+
+    &-item {
+        background-color: $white;
+        border-radius: 2.5rem;
+        padding: 2.5rem;
+        text-align: left;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 3.5rem;
+
+        @media #{$pocket} {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+        }
+
+        @media #{$lap-and-up} {
+            min-width: 27vw;
+            min-height: 35rem;
+        }
+
+        & > *,
+        & * {
+            transition: 1s;
+        }
+
+        &.collapsed {
+            align-items: center;
+            justify-content: center;
+            min-width: unset;
+            border-radius: 50rem;
+            padding-top: 5rem;
+
+            .services-item-asset,
+            p.small {
+                display: none;
+            }
+
+            .f.f-col.f-g10 {
+                flex: 1 0 auto;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+            }
+
+            .f.f-jcsb {
+                width: auto;
+            }
+        }
+
+        .f.f-col.f-g10 {
+            transform: none;
+            transform-origin: top left;
+            position: relative;
+        }
+
+        .f.f-jcsb {
+            width: 100%;
+            align-items: flex-end;
+        }
+
+        &-asset {
+            aspect-ratio: 1/1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-basis: 10rem;
+            width: 10rem;
+            max-width: 10rem;
+            min-width: 10rem;
+            height: 10rem;
+            max-height: 10rem;
+            min-height: 10rem;
+            background-color: blue;
+            border-radius: calc(2.5rem * 0.5);
+        }
+    }
+}

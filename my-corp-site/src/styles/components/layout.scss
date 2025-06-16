@@ -98,3 +98,18 @@ footer {
         color: $white;
     }
 }
+
+.section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    text-align: left;
+
+    @media #{$lap-and-up} {
+        gap: 3rem;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        max-width: 83rem;
+    }
+}
