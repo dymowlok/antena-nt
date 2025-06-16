@@ -279,3 +279,6 @@ window.addEventListener('resize', () => {
         reinitializeTextReveal();
     }, 300);
 });
+
+import { setupServicesSection } from './servicesSection.js';
+setupServicesSection();
