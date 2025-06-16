@@ -264,44 +264,44 @@ function animateStandardOut(element) {
 function getAnimationConfig(tagName) {
     const configs = {
         'H1': {
-            duration: 1.2,
-            stagger: 0.15,
+            duration: 1,
+            stagger: 0.1,
             ease: "power3.out",
             yPercent: 100
         },
         'H2': {
-            duration: 1.0,
-            stagger: 0.12,
+            duration: 1,
+            stagger: 0.1,
             ease: "power3.out",
             yPercent: 90
         },
         'H3': {
-            duration: 0.8,
+            duration: 1,
             stagger: 0.1,
             ease: "power2.out",
             yPercent: 80
         },
         'H4': {
-            duration: 0.8,
+            duration: 1,
             stagger: 0.1,
             ease: "power2.out",
             yPercent: 80
         },
         'H5': {
-            duration: 0.8,
+            duration: 1,
             stagger: 0.1,
             ease: "power2.out",
             yPercent: 80
         },
         'H6': {
-            duration: 0.8,
+            duration: 1,
             stagger: 0.1,
             ease: "power2.out",
             yPercent: 80
         },
         'P': {
-            duration: 0.7,
-            stagger: 0.08,
+            duration: 1,
+            stagger: 0.1,
             ease: "power2.out",
             yPercent: 70
         }
