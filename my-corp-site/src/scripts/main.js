@@ -168,8 +168,6 @@ export class ButtonThemeSwitcher {
     }
 }
 
-// import { setupTextReveal } from './textReveal.js';
-// setupTextReveal();
 
 
 import {
