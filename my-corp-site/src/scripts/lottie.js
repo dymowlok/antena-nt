@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import lenis from './utils/lenis.js';
 import heroJson from '../assets/lottie/hero.json' assert { type: 'json' };
+import { debugLog, debugWarn, debugError } from './utils/debug.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -12,23 +13,23 @@ let isInitialized = false;
 export function loadHeroLottie() {
     // Zapobiegnij wielokrotnemu ładowaniu
     if (isInitialized) {
-        console.log('⚠️ Lottie already initialized');
+        debugLog('⚠️ Lottie already initialized');
         return;
     }
 
     const container = document.querySelector('.hero-lottie');
     if (!container) {
-        console.warn('❌ Hero Lottie container not found');
+        debugWarn('❌ Hero Lottie container not found');
         return;
     }
 
     // Sprawdź czy kontener nie jest już zajęty
     if (container.children.length > 0) {
-        console.log('⚠️ Container already has content, clearing...');
+        debugLog('⚠️ Container already has content, clearing...');
         container.innerHTML = '';
     }
 
-    console.log('🎬 Loading Lottie animation...');
+    debugLog('🎬 Loading Lottie animation...');
     isInitialized = true;
 
     anim = lottie.loadAnimation({
@@ -43,7 +44,7 @@ export function loadHeroLottie() {
     });
 
     anim.addEventListener('DOMLoaded', () => {
-        console.log('✅ Lottie loaded, total frames:', anim.totalFrames);
+        debugLog('✅ Lottie loaded, total frames:', anim.totalFrames);
 
         // 1. Automatyczne odtwarzanie pierwszych 56 ramek
         anim.playSegments([0, 56], true);
@@ -54,7 +55,7 @@ export function loadHeroLottie() {
 }
 
 function handleAutoplayComplete() {
-    console.log('✅ Autoplay completed, setting up scroll animation...');
+    debugLog('✅ Autoplay completed, setting up scroll animation...');
 
     // Usuń event listener żeby nie wywołać wielokrotnie
     anim.removeEventListener('complete', handleAutoplayComplete);
@@ -66,7 +67,7 @@ function handleAutoplayComplete() {
 function setupScrollAnimation() {
     const container = document.querySelector('.hero-lottie');
     if (!container || !anim) {
-        console.error('❌ Cannot setup scroll - missing container or animation');
+        debugError('❌ Cannot setup scroll - missing container or animation');
         return;
     }
 
@@ -76,7 +77,7 @@ function setupScrollAnimation() {
     const frameRange = endFrame - startFrame;
 
     // Debug sprawdzenie
-    console.log('📊 Frame calculation:', {
+    debugLog('📊 Frame calculation:', {
         totalFrames,
         startFrame,
         endFrame,
@@ -86,11 +87,11 @@ function setupScrollAnimation() {
 
     // WAŻNE: Sprawdź czy range jest poprawny
     if (frameRange <= 0) {
-        console.error('❌ Invalid frame range:', { startFrame, endFrame, frameRange });
+        debugError('❌ Invalid frame range:', { startFrame, endFrame, frameRange });
         return;
     }
 
-    console.log(`🎯 Setting up scroll: frames ${startFrame}-${endFrame}`);
+    debugLog(`🎯 Setting up scroll: frames ${startFrame}-${endFrame}`);
 
     // Ustaw na końcu autoplay
     anim.goToAndStop(56, true);
@@ -122,26 +123,26 @@ function setupScrollAnimation() {
 
             // Debug log co 10 updates
             if (Math.random() < 0.1) {
-                console.log(`🎬 Progress: ${progress.toFixed(3)} | Start: ${startFrame} | Target: ${targetFrame.toFixed(1)} | Clamped: ${clampedFrame.toFixed(1)} | Current: ${anim.currentFrame.toFixed(1)}`);
+                debugLog(`🎬 Progress: ${progress.toFixed(3)} | Start: ${startFrame} | Target: ${targetFrame.toFixed(1)} | Clamped: ${clampedFrame.toFixed(1)} | Current: ${anim.currentFrame.toFixed(1)}`);
             }
         },
 
         onLeave: (self) => {
-            console.log('🚪 ScrollTrigger onLeave, direction:', self.direction);
+            debugLog('🚪 ScrollTrigger onLeave, direction:', self.direction);
             if (anim && self.direction === 1) {
                 anim.goToAndStop(endFrame, true);
             }
         },
 
         onEnter: (self) => {
-            console.log('🚪 ScrollTrigger onEnter, direction:', self.direction);
+            debugLog('🚪 ScrollTrigger onEnter, direction:', self.direction);
             if (anim && self.direction === -1) {
                 anim.goToAndStop(startFrame, true);
             }
         },
 
         onToggle: (self) => {
-            console.log('🔄 ScrollTrigger toggle, isActive:', self.isActive);
+            debugLog('🔄 ScrollTrigger toggle, isActive:', self.isActive);
         }
     });
 
@@ -161,37 +162,37 @@ function setupScrollAnimation() {
 
 
 
-    console.log('✅ Scroll animation ready');
+    debugLog('✅ Scroll animation ready');
 }
 
 // Debug functions
 export function debugLottieFrames() {
     if (!anim) {
-        console.log('❌ No animation loaded');
+        debugLog('❌ No animation loaded');
         return;
     }
 
-    console.log('=== LOTTIE DEBUG ===');
-    console.log('Total frames:', anim.totalFrames);
-    console.log('Current frame:', anim.currentFrame);
-    console.log('Is loaded:', anim.isLoaded);
-    console.log('Container children:', document.querySelector('.hero-lottie')?.children.length);
+    debugLog('=== LOTTIE DEBUG ===');
+    debugLog('Total frames:', anim.totalFrames);
+    debugLog('Current frame:', anim.currentFrame);
+    debugLog('Is loaded:', anim.isLoaded);
+    debugLog('Container children:', document.querySelector('.hero-lottie')?.children.length);
 }
 
 export function goToFrame(frameNumber) {
     if (!anim) {
-        console.log('❌ No animation loaded');
+        debugLog('❌ No animation loaded');
         return;
     }
 
     const clampedFrame = Math.max(0, Math.min(frameNumber, anim.totalFrames - 1));
     anim.goToAndStop(clampedFrame, true);
-    console.log(`🎯 Jumped to frame: ${clampedFrame}`);
+    debugLog(`🎯 Jumped to frame: ${clampedFrame}`);
 }
 
 // Restart function w przypadku problemów
 export function restartLottieAnimation() {
-    console.log('🔄 Restarting Lottie...');
+    debugLog('🔄 Restarting Lottie...');
 
     // Zniszcz poprzednią animację
     if (anim) {
