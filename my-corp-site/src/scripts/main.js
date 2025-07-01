@@ -1,4 +1,4 @@
-// main.js – ORIGINAL VERSION (bez dodatkowych stylowań)
+// main.js – NAPRAWIONA WERSJA (po rozwiązaniu konfliktu merge)
 
 import '../styles/main.scss';
 import './theme.js';
@@ -9,6 +9,7 @@ loadHeroLottie();
 import { setupAboutSection } from './about.js';
 setupAboutSection();
 
+// ButtonThemeSwitcher - zachowuję z gałęzi codex/decide-and-clean-up-text-reveal-module
 export class ButtonThemeSwitcher {
     constructor() {
         this.button = document.querySelector('.header a.button.light');
@@ -168,8 +169,7 @@ export class ButtonThemeSwitcher {
     }
 }
 
-
-
+// Text Reveal - zachowuję z gałęzi main
 import {
     setupIntegratedTextReveal,
     reinitializeTextReveal,
