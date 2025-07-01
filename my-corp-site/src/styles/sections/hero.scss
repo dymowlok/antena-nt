@@ -5,11 +5,11 @@
     // height: 300vh;
 
     h1 {
+        max-width: 83rem;
+
         @media #{$phone} {
             max-width: 31.5rem;
         }
-
-        max-width: 83rem;
     }
 
     p {
