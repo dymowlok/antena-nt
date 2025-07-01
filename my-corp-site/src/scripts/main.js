@@ -2,6 +2,7 @@
 
 import '../styles/main.scss';
 import './theme.js';
+import { debugLog, debugWarn } from './utils/debug.js';
 
 import { loadHeroLottie } from './lottie.js';
 loadHeroLottie();
@@ -17,11 +18,11 @@ export class ButtonThemeSwitcher {
         this.currentClass = 'light';
 
         if (!this.button || !this.firstSection) {
-            console.warn('ButtonThemeSwitcher: Brak wymaganych elementów');
+            debugWarn('ButtonThemeSwitcher: Brak wymaganych elementów');
             return;
         }
 
-        console.log('✅ ButtonThemeSwitcher zainicjalizowany');
+        debugLog('✅ ButtonThemeSwitcher zainicjalizowany');
         this.update();
     }
 
@@ -139,7 +140,7 @@ export class ButtonThemeSwitcher {
         this.button.classList.add(newClass);
         this.currentClass = newClass;
 
-        console.log(`🎨 Button: ${oldClass} → ${newClass}`);
+        debugLog(`🎨 Button: ${oldClass} → ${newClass}`);
 
         // Smooth transition
         this.button.style.transition = 'all 0.3s ease';
@@ -148,7 +149,7 @@ export class ButtonThemeSwitcher {
     logDebugInfo(sectionBottom, blackZone, lightZonePosition, targetClass) {
         if (window.DEBUG_BUTTON_SWITCHER) {
             const vh = window.innerHeight / 100;
-            console.log('🔍 ButtonSwitcher:', {
+            debugLog('🔍 ButtonSwitcher:', {
                 'Section bottom': `${Math.round(sectionBottom)}px (${Math.round(sectionBottom / vh)}vh)`,
                 'Black zone': `≤ ${Math.round(blackZone)}px (≤ 30vh)`,
                 'Light zone': `≤ ${Math.round(lightZonePosition)}px (≤ ${Math.round((window.innerHeight - lightZonePosition) / vh)}vh from bottom)`,
@@ -161,7 +162,7 @@ export class ButtonThemeSwitcher {
 
     enableDebug() {
         window.DEBUG_BUTTON_SWITCHER = true;
-        console.log('🐛 ButtonSwitcher debug ON');
+        debugLog('🐛 ButtonSwitcher debug ON');
     }
 
     disableDebug() {

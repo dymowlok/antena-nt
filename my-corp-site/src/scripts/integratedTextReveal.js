@@ -1,11 +1,12 @@
 import { gsap } from 'gsap';
 import { SplitText } from 'gsap/SplitText';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { debugLog, debugWarn, debugError } from './utils/debug.js';
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 export function setupIntegratedTextReveal() {
-    console.log('🎬 Initializing Integrated Text Reveal...');
+    debugLog('🎬 Initializing Integrated Text Reveal...');
 
     const containers = document.querySelectorAll('section, footer');
 
@@ -18,10 +19,10 @@ export function setupIntegratedTextReveal() {
 
             // Zdecyduj czy użyć SplitText czy standardowej animacji
             if (shouldUseSplitText(element)) {
-                console.log('📝 SplitText animation for:', element.tagName, element.textContent.substring(0, 30) + '...');
+                debugLog('📝 SplitText animation for:', element.tagName, element.textContent.substring(0, 30) + '...');
                 createSplitTextReveal(element);
             } else {
-                console.log('✨ Standard reveal for:', element.tagName);
+                debugLog('✨ Standard reveal for:', element.tagName);
                 createStandardReveal(element);
             }
         });
@@ -124,7 +125,7 @@ function createSplitTextReveal(element) {
             once: true, // JEDNORAZOWO
             toggleActions: "play none none none",
             onStart: () => {
-                console.log('🎯 Animating once:', element.tagName, element.textContent.substring(0, 20));
+                debugLog('🎯 Animating once:', element.tagName, element.textContent.substring(0, 20));
             }
         }
     });
@@ -332,7 +333,7 @@ export function cleanupTextReveal() {
 
 // Funkcja reinicjalizacji (dla resize)
 export function reinitializeTextReveal() {
-    console.log('🔄 Reinitializing text reveal...');
+    debugLog('🔄 Reinitializing text reveal...');
 
     cleanupTextReveal();
 
@@ -371,11 +372,11 @@ export function setRevealTriggerPoints(startPoint = "top 90%", endPoint = "botto
 export function testSectionReveal(sectionSelector) {
     const section = document.querySelector(sectionSelector);
     if (!section) {
-        console.log('❌ Section not found:', sectionSelector);
+        debugLog('❌ Section not found:', sectionSelector);
         return;
     }
 
-    console.log('🧪 Testing section:', sectionSelector);
+    debugLog('🧪 Testing section:', sectionSelector);
 
     const elements = section.querySelectorAll('*');
     let splitTextCount = 0;
@@ -391,7 +392,7 @@ export function testSectionReveal(sectionSelector) {
         }
     });
 
-    console.log('📊 Results:', {
+    debugLog('📊 Results:', {
         'SplitText elements': splitTextCount,
         'Standard elements': standardCount,
         'Total animated': splitTextCount + standardCount
@@ -401,10 +402,10 @@ export function testSectionReveal(sectionSelector) {
 // Debug funkcja do sprawdzenia wszystkich trigger points
 export function debugTriggerPoints() {
     const triggers = ScrollTrigger.getAll();
-    console.log('🎯 Active ScrollTriggers:', triggers.length);
+    debugLog('🎯 Active ScrollTriggers:', triggers.length);
 
     triggers.forEach((trigger, index) => {
-        console.log(`Trigger ${index + 1}:`, {
+        debugLog(`Trigger ${index + 1}:`, {
             element: trigger.trigger.tagName,
             start: trigger.start,
             end: trigger.end,
