@@ -1,6 +1,7 @@
 import lottie from 'lottie-web';
 import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import lenis from './utils/lenis.js';
 import heroJson from '../assets/lottie/hero.json' assert { type: 'json' };
 
 gsap.registerPlugin(ScrollTrigger);
@@ -101,35 +102,6 @@ function setupScrollAnimation() {
         }
     });
 
-    // POPRAWKA: Sprawdź czy Lenis jest aktywny - różne metody
-    let isLenisActive = false;
-
-    // Metoda 1: sprawdź window.lenis
-    if (window.lenis && typeof window.lenis.scroll === 'number') {
-        isLenisActive = true;
-    }
-
-    // Metoda 2: sprawdź czy istnieje w module
-    if (!isLenisActive) {
-        try {
-            const lenisModule = document.querySelector('[data-lenis-scroller]');
-            if (lenisModule) isLenisActive = true;
-        } catch (e) { }
-    }
-
-    // Metoda 3: sprawdź czy body ma Lenis właściwości
-    if (!isLenisActive) {
-        const bodyStyle = getComputedStyle(document.body);
-        if (bodyStyle.transform && bodyStyle.transform !== 'none') {
-            isLenisActive = true;
-        }
-    }
-
-    console.log('🌊 Lenis check:', {
-        'window.lenis exists': !!window.lenis,
-        'lenis.scroll type': typeof window.lenis?.scroll,
-        'final isActive': isLenisActive
-    });
 
     ScrollTrigger.create({
         trigger: container,
@@ -187,13 +159,7 @@ function setupScrollAnimation() {
     // Dodaj scroll listener
     window.addEventListener('scroll', handleScroll, { passive: true });
 
-    // Jeśli Lenis jest aktywny, dodaj także jego sync
-    if (isLenisActive && window.lenis) {
-        console.log('🔄 Adding Lenis sync...');
-        window.lenis.on('scroll', () => {
-            ScrollTrigger.update();
-        });
-    }
+
 
     console.log('✅ Scroll animation ready');
 }
