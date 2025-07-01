@@ -1,7 +1,7 @@
-import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import { menuData } from '../data/menu';
+import lenis from './utils/lenis.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -98,17 +98,6 @@ const HeaderStateManager = {
     }
 };
 
-// Smooth scroll setup
-const lenis = new Lenis({
-    duration: 1.2,
-    smooth: true
-});
-
-function raf(time) {
-    lenis.raf(time);
-    requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
 
 // Theme colors
 const themeColors = {

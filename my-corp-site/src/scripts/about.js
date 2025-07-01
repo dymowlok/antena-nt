@@ -1,11 +1,12 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import lenis from './utils/lenis.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export function setupAboutSection() {
     const aboutSection = document.querySelector('#o-firmie');
-    const scroller = document.querySelector('[data-lenis-scroller]') || window;
+    const scroller = lenis.target;
     if (!aboutSection) return;
 
     const sections = aboutSection.querySelectorAll('.about-section');
