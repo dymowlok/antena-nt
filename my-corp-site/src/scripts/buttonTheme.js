@@ -1,5 +1,11 @@
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { headerButton, headerDot, heroSection, currentButtonTheme } from "./header.js";
+import { handleScrollDirection } from "./scrollHelpers.js";
+// import { updateNavHighlight } from "./header.js"; // Removed to break circular dependency
+
+gsap.registerPlugin(ScrollTrigger);
+
 function updateButtonTheme() {
     if (!headerButton || !heroSection) return;
 
@@ -8,7 +14,7 @@ function updateButtonTheme() {
 
     // Jeśli sekcja hero jest widoczna w viewporcie
     if (heroVisible) {
-        if (currentButtonTheme !== 'white') {
+        if (currentButtonTheme.value !== 'white') {
             animateButtonThemeChange('white');
         }
         // Pokaż dot gdy hero jest widoczne
@@ -22,7 +28,7 @@ function updateButtonTheme() {
         }
     } else {
         // Hero nie jest widoczne - button ma być black
-        if (currentButtonTheme !== 'black') {
+        if (currentButtonTheme.value !== 'black') {
             animateButtonThemeChange('black');
         }
         // Ukryj dot gdy hero nie jest widoczne
@@ -40,12 +46,12 @@ function updateButtonTheme() {
 }
 
 function animateButtonThemeChange(newTheme) {
-    const oldTheme = currentButtonTheme;
+    const oldTheme = currentButtonTheme.value;
 
     // Nie zmieniaj jeśli to ten sam theme
     if (oldTheme === newTheme) return;
 
-    console.log(`🎨 Button theme change: ${oldTheme} → ${newTheme}`);
+    if (!headerButton) return;
 
     const tl = gsap.timeline();
 
@@ -54,9 +60,11 @@ function animateButtonThemeChange(newTheme) {
         duration: 0.12,
         ease: 'power2.inOut',
         onComplete: () => {
-            headerButton.classList.remove(oldTheme);
-            headerButton.classList.add(newTheme);
-            currentButtonTheme = newTheme;
+            if (headerButton) {
+                headerButton.classList.remove(oldTheme);
+                headerButton.classList.add(newTheme);
+                currentButtonTheme.value = newTheme;
+            }
         }
     })
         .to(headerButton, {
@@ -69,12 +77,8 @@ function animateButtonThemeChange(newTheme) {
 // Event listeners
 window.addEventListener('scroll', handleScrollDirection);
 window.addEventListener('resize', () => {
-    updateNavHighlight();
     updateButtonTheme();
 });
-ScrollTrigger.addEventListener('refresh', updateNavHighlight);
-
-ScrollTrigger.refresh();
 
 // POPRAWKA: Inicjalizacja button theme z dot management
 setTimeout(() => {
@@ -84,7 +88,7 @@ setTimeout(() => {
         const heroVisible = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
 
         if (heroVisible) {
-            currentButtonTheme = 'white';
+            currentButtonTheme.value = 'white';
             headerButton.classList.remove('light', 'black', 'gray');
             headerButton.classList.add('white');
             // Pokaż dot
@@ -92,7 +96,7 @@ setTimeout(() => {
                 gsap.set(headerDot, { display: 'block', opacity: 1 });
             }
         } else {
-            currentButtonTheme = 'black';
+            currentButtonTheme.value = 'black';
             headerButton.classList.remove('white', 'light', 'gray');
             headerButton.classList.add('black');
             // Ukryj dot
@@ -100,8 +104,7 @@ setTimeout(() => {
                 gsap.set(headerDot, { display: 'none', opacity: 0 });
             }
         }
-
-        console.log('✅ Button theme handler initialized with theme:', currentButtonTheme);
     }
 }, 300);
+
 export { updateButtonTheme, animateButtonThemeChange };

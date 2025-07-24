@@ -71,9 +71,16 @@ function setupScrollAnimation() {
         return;
     }
 
-    const totalFrames = anim.totalFrames; // 271
+    // Wait for animation to be fully loaded
+    if (!anim.isLoaded || anim.totalFrames < 100) {
+        debugLog('⏳ Animation not fully loaded, retrying in 100ms...');
+        setTimeout(setupScrollAnimation, 100);
+        return;
+    }
+
+    const totalFrames = anim.totalFrames;
     const startFrame = 57;
-    const endFrame = Math.floor(totalFrames) - 1; // POPRAWKA: Math.floor na totalFrames, nie na wynik
+    const endFrame = totalFrames - 1;
     const frameRange = endFrame - startFrame;
 
     // Debug sprawdzenie

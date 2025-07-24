@@ -2,6 +2,12 @@ import { gsap } from "gsap";
 import { menuData } from "../data/menu";
 import lenis from "./utils/lenis.js";
 import { headerDesktopMenu, headerBgOverlay, headerWrap, body, navItems, isDesktopMenuOpen, headerState, HeaderStateManager } from "./header.js";
+
+// Local variables to avoid import issues
+let desktopMenuTimeout = null;
+let hasSubmenuItems = false;
+
+console.log('📦 desktopMenu.js is loading...');
 // Desktop menu functionality
 function setupDesktopMenu() {
     renderDesktopMenu();
@@ -20,11 +26,11 @@ function setupDesktopMenu() {
             li.addEventListener('mouseenter', () => {
                 // KRYTYCZNE: Sprawdź czy można pokazać menu
                 if (!HeaderStateManager.canShowDesktopMenu()) {
-                    console.log('❌ Desktop menu blocked - not all nav items visible or wrong state');
+
                     return;
                 }
 
-                console.log('✅ Can show desktop menu - all nav items visible');
+
                 showDesktopMenu(menuItem);
             });
 
@@ -48,7 +54,7 @@ function setupDesktopMenu() {
             // Mouse enter na li BEZ submenu - ukryj desktop menu
             li.addEventListener('mouseenter', () => {
                 if (isDesktopMenuOpen) {
-                    console.log('🚫 Hiding desktop menu - hovered li without submenu');
+
                     hideDesktopMenu();
                 }
             });
@@ -58,11 +64,11 @@ function setupDesktopMenu() {
     // Desktop menu hover handlers
     headerDesktopMenu.addEventListener('mouseenter', () => {
         clearTimeout(desktopMenuTimeout);
-        console.log('🖱️ Desktop menu hovered - keeping open');
+
     });
 
     headerDesktopMenu.addEventListener('mouseleave', () => {
-        console.log('🖱️ Left desktop menu - hiding');
+
         hideDesktopMenu();
     });
 
@@ -75,7 +81,7 @@ function setupDesktopMenu() {
 
     headerWrap.addEventListener('mouseleave', () => {
         if (isDesktopMenuOpen) {
-            console.log('🖱️ Left header wrap - hiding desktop menu');
+
             hideDesktopMenu();
         }
     });
@@ -88,7 +94,7 @@ function setupDesktopMenu() {
             const scrollDelta = currentScroll - lastScrollForMenu;
 
             if (scrollDelta > 100) {
-                console.log('📜 Strong scroll down - hiding desktop menu');
+
                 hideDesktopMenu();
             }
 
@@ -108,29 +114,29 @@ function renderDesktopMenu() {
 
 function showDesktopMenu(menuItem) {
     if (!menuItem || !menuItem.submenu || window.matchMedia('(max-width: 899px)').matches) {
-        console.log('❌ Cannot show desktop menu:', !menuItem ? 'no menuItem' : !menuItem.submenu ? 'no submenu' : 'mobile device');
+
         return;
     }
 
     if (!HeaderStateManager.canShowDesktopMenu()) {
-        console.log('❌ Desktop menu blocked - header not in allowed state');
+
         return;
     }
 
-    console.log('🎯 Showing desktop menu for:', menuItem.label, 'with', menuItem.submenu.length, 'items');
+
 
     clearTimeout(desktopMenuTimeout);
 
     const content = headerDesktopMenu.querySelector('.header-desktop-menu-content');
     if (!content) {
-        console.error('❌ Desktop menu content container not found!');
+
         return;
     }
 
     content.innerHTML = '';
 
     const itemsPerColumn = Math.ceil(menuItem.submenu.length / 2);
-    console.log('📊 Items per column:', itemsPerColumn);
+
 
     for (let i = 0; i < 2; i++) {
         const column = document.createElement('div');
@@ -140,7 +146,7 @@ function showDesktopMenu(menuItem) {
         const end = start + itemsPerColumn;
         const columnItems = menuItem.submenu.slice(start, end);
 
-        console.log(`📋 Column ${i + 1}:`, columnItems.map(item => item.label));
+
 
         columnItems.forEach(item => {
             const link = document.createElement('a');
@@ -169,7 +175,7 @@ function showDesktopMenu(menuItem) {
         content.appendChild(column);
     }
 
-    console.log('✅ Desktop menu content rendered');
+
 
     // Blur zawartości strony
     const mainContent = document.querySelector('main');
@@ -192,14 +198,14 @@ function showDesktopMenu(menuItem) {
     }
 
     setTimeout(() => {
-        console.log('🎬 Starting desktop menu animation');
+
         headerBgOverlay.classList.add('active');
         headerDesktopMenu.classList.add('active');
         isDesktopMenuOpen = true;
 
         setTimeout(() => {
             body.classList.add('scroll-locked');
-            console.log('🔒 Scroll locked');
+
         }, 300);
 
     }, 100);
@@ -237,20 +243,63 @@ function hideDesktopMenu() {
 function startCloseTimer() {
     clearTimeout(desktopMenuTimeout);
     desktopMenuTimeout = setTimeout(() => {
-        console.log('⏰ Timer expired - hiding desktop menu');
+
         hideDesktopMenu();
     }, 2000); // Skrócone do 2 sekund dla lepszego UX
 }
 
 function updateActiveNavStyling(headerBgColor = null) {
-    if (!headerBgColor) {
-        const computedStyle = window.getComputedStyle(headerWrap);
-        headerBgColor = computedStyle.backgroundColor;
+    // Add debounce to prevent infinite loops
+    if (updateActiveNavStyling.isRunning) {
+        return;
+    }
+    updateActiveNavStyling.isRunning = true;
+
+    setTimeout(() => {
+        updateActiveNavStyling.isRunning = false;
+    }, 100);
+
+    console.log('🔄 updateActiveNavStyling called');
+
+    // Use the imported headerWrap or find it if not available
+    let headerWrapElement = headerWrap || document.querySelector('.header-wrap');
+    console.log('🔍 headerWrap element (imported):', headerWrap);
+    console.log('🔍 headerWrap element (queried):', document.querySelector('.header-wrap'));
+    console.log('🔍 Using headerWrap element:', headerWrapElement);
+
+    if (!headerWrapElement) {
+        console.log('❌ headerWrap not found!');
+        return;
     }
 
-    const isGrayBackground = headerBgColor === themeColors.gray ||
-        headerBgColor === 'rgb(242, 242, 242)' ||
-        headerBgColor.includes('242');
+    // Find the currently visible section/div with data-theme
+    const sections = document.querySelectorAll('[data-theme]');
+    let currentTheme = 'white'; // default
+
+    console.log('📋 Found elements with data-theme:', sections.length);
+
+    for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        console.log('📍 Element:', section.tagName, section.id || section.className, 'data-theme:', section.getAttribute('data-theme'), 'rect:', rect.top, rect.bottom);
+        if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+            currentTheme = section.getAttribute('data-theme');
+            console.log('🎯 Current theme:', currentTheme, 'from element:', section.tagName, section.id || section.className);
+            break;
+        }
+    }
+
+    console.log('🎨 Setting header-wrap background for theme:', currentTheme);
+
+    // REMOVED: Header background color logic - now handled in main.js
+    // This prevents conflicts between multiple scripts setting the same property
+
+    // Get the current background color from the element
+    const computedStyle = window.getComputedStyle(headerWrapElement);
+    headerBgColor = computedStyle.backgroundColor;
+    console.log('✅ Final header-wrap background-color:', headerBgColor);
+
+    const isGrayBackground = headerBgColor === '#f7f7f7' ||
+        headerBgColor === 'rgb(247, 247, 247)';
 
     navItems.forEach(li => {
         const a = li.querySelector('a');
@@ -268,5 +317,14 @@ function updateActiveNavStyling(headerBgColor = null) {
     });
 }
 
+// Initialize the debounce flag
+updateActiveNavStyling.isRunning = false;
+
+
+// Make function globally available
+window.updateActiveNavStyling = updateActiveNavStyling;
+
+console.log('✅ desktopMenu.js finished loading');
+console.log('🔧 updateActiveNavStyling function available globally');
 
 export { setupDesktopMenu, showDesktopMenu, hideDesktopMenu };

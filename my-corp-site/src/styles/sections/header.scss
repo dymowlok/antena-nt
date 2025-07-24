@@ -83,7 +83,7 @@
 
         transition:
             gap 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-            background-color 0.4s ease;
+            background-color 0.2s ease-in;
 
         will-change: gap, background-color;
     }

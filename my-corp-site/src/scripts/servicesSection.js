@@ -147,10 +147,10 @@ function initDesktopSliderCollapse() {
                 if (smallText) {
                     if (isFullyExpanded && wasCollapsed) {
                         // Item is transitioning from collapsed to expanded - wait for width transition, then show paragraph
-                        gsap.delayedCall(0.2, () => {
+                        gsap.delayedCall(0.25, () => {
                             gsap.to(smallText, {
                                 opacity: 1,
-                                duration: 0.1,
+                                duration: 0.25,
                                 ease: 'power2.out'
                             });
                         });

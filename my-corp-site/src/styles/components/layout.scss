@@ -91,21 +91,11 @@ footer {
 }
 
 // Dark themes - white text (only for sections/divs with these themes)
-section[data-theme="orange"],
-section[data-theme="indigo"],
-section[data-theme="sky"],
-section[data-theme="blue"],
-div[data-theme="orange"],
-div[data-theme="indigo"],
-div[data-theme="sky"],
-div[data-theme="blue"] {
-    & h1,
-    & h2,
-    & h3,
-    & h4,
-    & h5,
-    & h6,
-    & p {
+[data-theme="orange"],
+[data-theme="indigo"],
+[data-theme="sky"],
+[data-theme="blue"] {
+    * {
         color: $white;
     }
 }

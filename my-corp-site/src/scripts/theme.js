@@ -103,18 +103,6 @@ const HeaderStateManager = {
     }
 };
 
-// Theme colors - DISABLED - now handled by themeManager.js
-// const themeColors = {
-//     white: '#ffffff',
-//     light: '#f2f2f2',
-//     indigo: '#7c7cf8',
-//     sky: '#afd9fa',
-//     blue: '#3d76f7',
-//     orange: '#ff603c',
-//     black: '#000000',
-//     gray: '#f2f2f2'
-// };
-
 // DOM elements
 const body = document.body;
 const header = document.querySelector('#header');
@@ -184,7 +172,6 @@ headerWrap.addEventListener('mouseleave', () => {
 // Initialize - POPRAWKA: ustaw gap na stałe 1rem
 initializeNavItems();
 headerWrap.style.gap = '1rem';
-gsap.set(header, { top: '-100%', opacity: 0 });
 
 // ONLY essential CSS fixes - NO UI styling changes + REMOVED backdrop-filter
 const essentialStyles = document.createElement('style');
@@ -761,28 +748,9 @@ function startCloseTimer() {
 }
 
 function updateActiveNavStyling(headerBgColor = null) {
-    if (!headerBgColor) {
-        const computedStyle = window.getComputedStyle(headerWrap);
-        headerBgColor = computedStyle.backgroundColor;
-    }
-
-    const isGrayBackground = headerBgColor === 'rgb(242, 242, 242)' ||
-        headerBgColor.includes('242');
-
-    navItems.forEach(li => {
-        const a = li.querySelector('a');
-        if (!a) return;
-
-        li.classList.remove('active-white-bg', 'active-gray-bg');
-
-        if (a.classList.contains('active')) {
-            if (isGrayBackground) {
-                li.classList.add('active-white-bg');
-            } else {
-                li.classList.add('active-gray-bg');
-            }
-        }
-    });
+    // DISABLED - This function is now handled by desktopMenu.js
+    // The header-wrap background color logic has been moved to desktopMenu.js
+    // to avoid conflicts between multiple theme systems
 }
 
 // Navigation highlighting

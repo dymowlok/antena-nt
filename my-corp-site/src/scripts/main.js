@@ -1,5 +1,7 @@
 // main.js – NAPRAWIONA WERSJA (po rozwiązaniu konfliktu merge)
 
+console.log('🚀 main.js is loading...');
+
 import '../styles/main.scss';
 import './theme.js';
 import './themeManager.js'; // Initialize theme manager
@@ -188,3 +190,82 @@ window.addEventListener('resize', () => {
 
 import { setupServicesSection } from './servicesSection.js';
 setupServicesSection();
+
+// Import desktopMenu to make updateActiveNavStyling available
+import './desktopMenu.js';
+
+// Simple header background color management
+function updateHeaderBackground() {
+    const headerWrap = document.querySelector('.header-wrap');
+    if (!headerWrap) {
+        console.log('❌ header-wrap not found');
+        return;
+    }
+
+    const sections = document.querySelectorAll('[data-theme]');
+    let currentTheme = 'white';
+
+    // Find the section that's most visible in the viewport
+    for (const section of sections) {
+        const rect = section.getBoundingClientRect();
+        const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+
+        if (visibleHeight > 0 && rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+            currentTheme = section.getAttribute('data-theme') || 'white';
+            console.log('🎯 Current theme:', currentTheme, 'from element:', section.tagName, section.id || section.className);
+            break;
+        }
+    }
+
+    console.log('🎨 Setting header-wrap background for theme:', currentTheme);
+
+    if (currentTheme === 'white') {
+        headerWrap.style.setProperty('background-color', '#f7f7f7', 'important');
+        console.log('⬜ Set header-wrap to #f7f7f7 (white theme)');
+    } else {
+        headerWrap.style.setProperty('background-color', '#fff', 'important');
+        console.log('⚪ Set header-wrap to #fff (other theme)');
+    }
+
+    console.log('✅ Final header-wrap background-color:', headerWrap.style.backgroundColor);
+}
+
+// Debounced version to prevent too frequent updates
+let headerBgTimeout;
+function debouncedUpdateHeaderBackground() {
+    clearTimeout(headerBgTimeout);
+    headerBgTimeout = setTimeout(updateHeaderBackground, 50);
+}
+
+// Set initial background color immediately to prevent flickering
+function setInitialHeaderBackground() {
+    const headerWrap = document.querySelector('.header-wrap');
+    if (headerWrap) {
+        // Start with white background (most common case)
+        headerWrap.style.setProperty('background-color', '#fff', 'important');
+        console.log('🚀 Set initial header background to #fff');
+    }
+}
+
+// Initialize header background - run multiple times to ensure it works
+setInitialHeaderBackground(); // Set immediately
+
+// Run again after DOM is fully loaded
+document.addEventListener('DOMContentLoaded', () => {
+    setInitialHeaderBackground();
+    updateHeaderBackground();
+});
+
+// Run again after a short delay
+setTimeout(() => {
+    console.log('🚀 Initializing header background color logic');
+    updateHeaderBackground();
+    window.addEventListener('scroll', debouncedUpdateHeaderBackground);
+}, 100); // Reduced delay
+
+// Run one more time after everything is loaded
+window.addEventListener('load', () => {
+    updateHeaderBackground();
+});
+
+console.log('✅ main.js finished loading');

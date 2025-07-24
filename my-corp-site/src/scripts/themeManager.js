@@ -5,14 +5,14 @@ gsap.registerPlugin(ScrollTrigger);
 
 // Theme colors mapping
 const themeColors = {
-    white: '#FFFFFF',
-    light: '#F8F9FA',
-    indigo: '#6366F1',
-    sky: '#0EA5E9',
-    blue: '#3B82F6',
-    orange: '#F97316',
+    white: '#ffffff',
+    light: '#f2f2f2',
+    indigo: '#7c7cf8',
+    sky: '#afd9fa',
+    blue: '#3d76f7',
+    orange: '#ff603c',
     black: '#000000',
-    gray: '#6B7280'
+    gray: '#f2f2f2'
 };
 
 class ThemeManager {
@@ -56,14 +56,14 @@ class ThemeManager {
     setupThemeTriggers() {
         // Get all sections with data-theme
         const sections = document.querySelectorAll('[data-theme]');
-        console.log('Found sections with data-theme:', sections.length);
+
 
         sections.forEach((section, index) => {
             const theme = section.getAttribute('data-theme');
             const nextSection = sections[index + 1];
             const nextTheme = nextSection?.getAttribute('data-theme');
 
-            console.log(`Section ${section.id}: theme=${theme}, nextTheme=${nextTheme}`);
+
 
             if (!theme) return;
 
@@ -77,11 +77,11 @@ class ThemeManager {
                     onUpdate: (self) => {
                         // Don't interpolate if services section is pinned
                         if (this.isServicesPinned && section.id === 'uslugi') {
-                            console.log('Services section pinned, skipping theme interpolation');
+
                             return;
                         }
 
-                        console.log(`Interpolating from ${theme} to ${nextTheme}, progress: ${self.progress}`);
+
                         this.interpolateTheme(theme, nextTheme, self.progress);
                     }
                 });
@@ -95,7 +95,7 @@ class ThemeManager {
         // Listen for services section pin state changes
         window.addEventListener('servicesPinStateChanged', (event) => {
             this.isServicesPinned = event.detail?.isPinned || false;
-            console.log('Services pin state changed:', this.isServicesPinned);
+
 
             if (this.isServicesPinned) {
                 this.setTheme('light');
@@ -110,7 +110,7 @@ class ThemeManager {
 
     interpolateTheme(fromTheme, toTheme, progress) {
         if (!themeColors[fromTheme] || !themeColors[toTheme]) {
-            console.warn('Invalid theme colors:', fromTheme, toTheme);
+
             return;
         }
 
@@ -122,39 +122,40 @@ class ThemeManager {
         );
 
         const color = `rgb(${interpolated.join(',')})`;
-        console.log(`Setting background color: ${color}`);
+
         gsap.set(this.body, { backgroundColor: color });
 
         // Don't set data-theme attribute - let CSS handle text colors based on section data-theme
         this.currentTheme = fromTheme;
 
-        // Handle header styling
-        if (this.headerWrap) {
-            const grayThemes = ['hero', 'kontakt'];
-            const isFromGray = grayThemes.includes(fromTheme);
-            const isToGray = grayThemes.includes(toTheme);
-            const blend = gsap.utils.interpolate(isFromGray ? 1 : 0, isToGray ? 1 : 0, progress);
+        // Header-wrap background color is now handled by desktopMenu.js
+        // to avoid conflicts between multiple theme systems
 
-            const newBgColor = blend > 0.5 ? themeColors.gray : themeColors.white;
-            gsap.to(this.headerWrap, {
-                backgroundColor: newBgColor,
-                duration: 0.15,
-                overwrite: 'auto'
-            });
+        // Trigger header-wrap update when theme changes
+        if (window.updateActiveNavStyling) {
+            window.updateActiveNavStyling();
         }
     }
 
     setTheme(theme) {
         if (!themeColors[theme]) {
-            console.warn('Invalid theme:', theme);
+
             return;
         }
 
-        console.log(`Setting theme: ${theme}`);
+
         this.currentTheme = theme;
 
         // Set background color directly
         gsap.set(this.body, { backgroundColor: themeColors[theme] });
+
+        // Header-wrap background color is now handled by desktopMenu.js
+        // to avoid conflicts between multiple theme systems
+
+        // Trigger header-wrap update when theme changes
+        if (window.updateActiveNavStyling) {
+            window.updateActiveNavStyling();
+        }
 
         if (this.header) {
             this.header.classList.remove('white', 'light', 'indigo', 'sky', 'blue', 'orange', 'black');
@@ -177,7 +178,7 @@ class ThemeManager {
 
         if (currentSection) {
             const theme = currentSection.getAttribute('data-theme');
-            console.log(`Refreshing theme to: ${theme} for section: ${currentSection.id}`);
+
             this.setTheme(theme);
         }
     }
@@ -188,7 +189,7 @@ class ThemeManager {
 
     // Public methods for services section
     setServicesPinned(isPinned) {
-        console.log(`Setting services pinned: ${isPinned}`);
+
         this.isServicesPinned = isPinned;
 
         // Dispatch event for other components
@@ -198,6 +199,11 @@ class ThemeManager {
 
         if (isPinned) {
             this.setTheme('light');
+        }
+
+        // Trigger header-wrap update when services pin state changes
+        if (window.updateActiveNavStyling) {
+            window.updateActiveNavStyling();
         }
     }
 }

@@ -12,6 +12,12 @@
         padding-bottom: 15rem;
     }
 
+    h2 {
+        @media #{$lap-and-up} {
+            font-size: 6rem;
+        }
+    }
+
     &-asset-wrap {
         position: sticky;
         top: 11.5rem;

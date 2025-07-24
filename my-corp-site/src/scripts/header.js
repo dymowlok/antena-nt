@@ -1,9 +1,7 @@
 import { gsap } from 'gsap';
-import ScrollTrigger from 'gsap/ScrollTrigger';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { menuData } from '../data/menu';
 import { isAtTop, isAtBottom } from "./scrollHelpers.js";
-import { updateButtonTheme } from "./buttonTheme.js";
-import { setupDesktopMenu } from "./desktopMenu.js";
 import lenis from './utils/lenis.js';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -14,6 +12,35 @@ let currentActiveSection = 'hero';
 let isHeaderHovered = false;
 export const isScrollingUp = { value: false };
 export const scrollUpTimer = { value: null };
+
+// DOM elements - defined early to avoid initialization issues
+const header = document.querySelector('.header');
+const headerWrap = document.querySelector('.header-wrap');
+const headerNav = document.querySelector('.header-nav');
+const headerDesktopMenu = document.querySelector('.header-desktop-menu');
+const headerBgOverlay = document.querySelector('.header-bg-overlay');
+const headerButton = document.querySelector('.header a.button');
+const headerDot = document.querySelector('.header-dot');
+const heroSection = document.querySelector('#hero');
+const body = document.body;
+
+let navItems = [];
+let isDesktopMenuOpen = false;
+let desktopMenuTimeout = null;
+let hasSubmenuItems = false;
+
+// Export currentButtonTheme for buttonTheme.js
+export const currentButtonTheme = { value: "white" };
+
+// Navigation highlighting - moved to top to avoid initialization issues
+const sectionMap = [
+    { id: 'hero', el: document.querySelector('#hero') },
+    { id: 'uslugi', el: document.querySelector('#uslugi') },
+    { id: 'o-firmie', el: document.querySelector('#o-firmie') },
+    { id: 'opinie', el: document.querySelector('#opinie') },
+    { id: 'lokalizacje', el: document.querySelector('#lokalizacje') },
+    { id: 'kontakt', el: document.querySelector('#kontakt') }
+].filter(section => section.el);
 
 // NEW: Centralized header state manager
 const HeaderStateManager = {
@@ -114,27 +141,12 @@ const themeColors = {
     gray: '#f2f2f2'
 };
 
-// DOM elements
-const body = document.body;
-const header = document.querySelector('#header');
-const headerWrap = header.querySelector('.header-wrap');
-const headerButton = header.querySelector('a.button[href="#kontakt"]');
-const headerDot = headerButton.querySelector('.dot');
-const headerNav = header.querySelector('.header-nav ul');
-const headerDesktopMenu = header.querySelector('.header-desktop-menu');
-const headerBgOverlay = header.querySelector('.header-bg-overlay');
-const heroSection = document.querySelector('#hero') || document.querySelector('main > section:first-child');
-export const currentButtonTheme = { value: "white" };
-let navItems = [];
-let desktopMenuTimeout = null;
-let isDesktopMenuOpen = false;
-let hasSubmenuItems = false;
-
 // Initialize navigation
 function initializeNavItems() {
-    console.log('🔧 Initializing nav items...');
+    const navUl = headerNav?.querySelector('ul');
+    if (!navUl) return;
 
-    headerNav.innerHTML = '';
+    navUl.innerHTML = '';
     menuData.forEach(({ label, url }) => {
         if (url === '#kontakt') return;
 
@@ -143,12 +155,11 @@ function initializeNavItems() {
         a.href = url;
         a.textContent = label;
         li.appendChild(a);
-        headerNav.appendChild(li);
+        navUl.appendChild(li);
     });
     navItems = headerNav.querySelectorAll('li');
 
-    console.log('✅ Created', navItems.length, 'nav items');
-    setupDesktopMenu();
+    // setupDesktopMenu(); // Temporarily disabled to break circular dependency
 }
 
 // Wait for nav items to be ready
@@ -297,91 +308,56 @@ essentialStyles.textContent = `
 `;
 document.head.appendChild(essentialStyles);
 
-// Header initialization
+// Header initialization - SINGLE ANIMATION ONLY
+let headerAnimationTriggered = false;
+
 async function initializeHeader() {
     await waitForNavItems();
 
-    if (!header) return;
+    if (!header || headerAnimationTriggered) return;
+
+    // Mark as triggered to prevent multiple animations
+    headerAnimationTriggered = true;
 
     // Start with header hidden
     gsap.set(header, {
         top: '-100%',
-        opacity: 0
+        opacity: 0,
+        transform: 'translateX(-50%) translateY(-100%)',
+        visibility: 'hidden'
     });
 
-    // Show header after a short delay to ensure it appears
+    // Single header animation
     setTimeout(() => {
-        if (header && header.style.opacity === '0') {
-            gsap.to(header, {
-                top: '0',
-                opacity: 1,
-                duration: 0.5,
-                ease: 'power2.out',
-                onComplete: () => {
-                    headerState = HeaderStateManager.states.HERO;
-                    updateNavHighlight();
-                    setTimeout(() => {
-                        updateButtonTheme();
-                    }, 100);
+        if (header) {
+            gsap.fromTo(header,
+                {
+                    opacity: 0,
+                    top: '-100%',
+                    transform: 'translateX(-50%) translateY(-100%)',
+                    visibility: 'hidden'
+                },
+                {
+                    opacity: 1,
+                    top: '0',
+                    transform: 'translateX(-50%) translateY(0)',
+                    visibility: 'visible',
+                    duration: 0.5,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        headerState = HeaderStateManager.states.HERO;
+                        updateNavHighlight();
+                    }
                 }
-            });
+            );
         }
     }, 1000); // Show header after 1 second
-
-    // Also create ScrollTriggers as backup for hero elements
-    const heroElements = [
-        { selector: '.hero-content-text h1', delay: 0.2 },
-        { selector: '.hero-content-text p', delay: 0.4 },
-        { selector: '.hero-buttons', delay: 0.6 },
-        { selector: '.hero-badge', delay: 0.8 }
-    ];
-
-    let headerShown = false;
-
-    heroElements.forEach(({ selector, delay }) => {
-        const element = document.querySelector(selector);
-        if (!element) return;
-
-        ScrollTrigger.create({
-            trigger: element,
-            start: 'top 85%',
-            once: true,
-            onEnter: () => {
-                if (!headerShown && header && header.style.opacity === '0') {
-                    headerShown = true;
-                    gsap.to(header, {
-                        top: '0',
-                        opacity: 1,
-                        duration: 0.5,
-                        delay: delay,
-                        ease: 'power2.out',
-                        onComplete: () => {
-                            headerState = HeaderStateManager.states.HERO;
-                            updateNavHighlight();
-                            setTimeout(() => {
-                                updateButtonTheme();
-                            }, 100);
-                        }
-                    });
-                }
-            }
-        });
-    });
 }
 
 initializeHeader();
 
 // Scroll position helpers
 // Navigation highlighting
-const sectionMap = [
-    { id: 'hero', el: document.querySelector('#hero') },
-    { id: 'uslugi', el: document.querySelector('#uslugi') },
-    { id: 'o-firmie', el: document.querySelector('#o-firmie') },
-    { id: 'opinie', el: document.querySelector('#opinie') },
-    { id: 'lokalizacje', el: document.querySelector('#lokalizacje') },
-    { id: 'kontakt', el: document.querySelector('#kontakt') }
-].filter(section => section.el);
-
 function updateNavHighlight() {
     const viewportHeight = window.innerHeight;
     const triggerLine = viewportHeight * 0.3;
@@ -435,7 +411,7 @@ function updateNavHighlight() {
 
     if (activeSection && activeSection !== currentActiveSection) {
         currentActiveSection = activeSection;
-        console.log('📍 Active section changed to:', activeSection);
+
 
         if (isDesktopMenuOpen && !HeaderStateManager.canShowDesktopMenu()) {
             hideDesktopMenu();
@@ -443,8 +419,8 @@ function updateNavHighlight() {
 
         // POPRAWKA: Nie nadpisuj nav items jeśli header powinien być pełny
         // Sprawdź czy aktualizować wyświetlanie nav items
-        const shouldShowFull = shouldShowFullHeader();
-        console.log('🔍 Should show full header?', shouldShowFull);
+        const shouldShowFull = HeaderStateManager.shouldShowFullHeader();
+
 
         if (!shouldShowFull && headerState === HeaderStateManager.states.SCROLLING) {
             hideInactiveNavItems();
@@ -469,7 +445,7 @@ function updateNavHighlight() {
 
 // POPRAWKA: Uproszczona funkcja updateHeaderUI - bez gap i logo
 function updateHeaderUI() {
-    const shouldBeFullHeader = shouldShowFullHeader();
+    const shouldBeFullHeader = HeaderStateManager.shouldShowFullHeader();
     const currentlyFullHeader = headerState === HeaderStateManager.states.HERO;
 
     if (shouldBeFullHeader === currentlyFullHeader) return;
@@ -479,14 +455,14 @@ function updateHeaderUI() {
     gsap.killTweensOf([headerDot, headerWrap, ...navItems]);
 
     if (shouldBeFullHeader) {
-        console.log('🔄 Switching to FULL header');
+
         headerState = HeaderStateManager.states.HERO;
 
         // Zawsze pokaż wszystkie nav items przy full header
         showAllNavItems();
 
     } else {
-        console.log('🔄 Switching to COMPACT header');
+
         headerState = HeaderStateManager.states.SCROLLING;
 
         if (isDesktopMenuOpen) {
@@ -501,7 +477,7 @@ function updateHeaderUI() {
 
 // Navigation item management
 function showAllNavItems() {
-    console.log('👥 Showing ALL nav items');
+
     navItems = headerNav.querySelectorAll('li');
 
     navItems.forEach((li, index) => {
@@ -529,12 +505,12 @@ function showAllNavItems() {
 
 function hideInactiveNavItems() {
     // POPRAWKA: Nie ukrywaj nav items jeśli header powinien być pełny
-    if (isHeaderHovered || shouldShowFullHeader()) {
-        console.log('❌ Cannot hide nav items - header should be full or hovered');
+    if (isHeaderHovered || HeaderStateManager.shouldShowFullHeader()) {
+
         return;
     }
 
-    console.log('👤 Hiding inactive nav items, showing only:', currentActiveSection);
+
 
     navItems = headerNav.querySelectorAll('li');
     if (navItems.length === 0) {
@@ -588,7 +564,7 @@ function hideInactiveNavItems() {
 }
 
 function showAllNavItemsOnScrollUp() {
-    if (headerState !== HeaderStateManager.states.SCROLLING || isHeaderHovered || shouldShowFullHeader()) return;
+    if (headerState !== HeaderStateManager.states.SCROLLING || isHeaderHovered || HeaderStateManager.shouldShowFullHeader()) return;
 
     navItems = headerNav.querySelectorAll('li');
     navItems.forEach((li, index) => {
@@ -610,7 +586,7 @@ function showAllNavItemsOnScrollUp() {
             delay: index * 0.01,
             ease: 'power2.out'
         });
-    }
+    });
 }
 
-export { HeaderStateManager, initializeHeader, updateHeaderUI, hideInactiveNavItems, showAllNavItemsOnScrollUp, showAllNavItems, updateNavHighlight, headerWrap, headerNav, headerDesktopMenu, headerBgOverlay, navItems, isDesktopMenuOpen, body, headerButton, headerDot, heroSection, currentActiveSection, headerState, currentButtonTheme, isScrollingUp, scrollUpTimer };
+export { HeaderStateManager, initializeHeader, updateHeaderUI, hideInactiveNavItems, showAllNavItemsOnScrollUp, showAllNavItems, updateNavHighlight, headerWrap, headerNav, headerDesktopMenu, headerBgOverlay, navItems, isDesktopMenuOpen, body, headerButton, headerDot, heroSection, currentActiveSection, headerState };

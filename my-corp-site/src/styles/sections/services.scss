@@ -73,6 +73,13 @@
             height: 40rem;
         }
 
+        h3 {
+            @media #{$lap-and-up} {
+                min-width: calc(27vw - 5rem);
+                min-height: unset;
+            }
+        }
+
         & > *,
         & * {
             transition: 1s;
@@ -83,6 +90,13 @@
             min-width: unset;
             border-radius: 6rem;
             min-width: 9rem !important;
+
+            h3 {
+                @media #{$lap-and-up} {
+                    min-height: 26.5rem;
+                    min-width: unset;
+                }
+            }
 
             .services-item-asset,
             p.small {

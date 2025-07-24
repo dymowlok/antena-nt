@@ -7,7 +7,7 @@ export function disableDebug() {
   window.DEBUG_MODE = false;
 }
 
-window.DEBUG_MODE = import.meta.env.DEV ? true : false;
+window.DEBUG_MODE = false; // Disable debug mode completely
 
 export function debugLog(...args) {
   if (window.DEBUG_MODE) {
