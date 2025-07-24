@@ -101,6 +101,11 @@
             }
         }
 
+        // Paragraph opacity transition (only for opacity, not width)
+        p.small {
+            transition: opacity 0.3s ease; // Only animate opacity, not width
+        }
+
         .f.f-col.f-g10 {
             transform: none;
             transform-origin: top left;

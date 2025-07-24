@@ -53,15 +53,3 @@ p {
 a {
     transition: $anim;
 }
-
-// Umożliwia płynny ruch znaków po split
-h1 span,
-h2 span,
-h3 span,
-h4 span,
-h5 span,
-h6 span,
-p span {
-    display: inline-block;
-    will-change: transform, opacity;
-}

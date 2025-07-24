@@ -2,6 +2,7 @@
 
 import '../styles/main.scss';
 import './theme.js';
+import './themeManager.js'; // Initialize theme manager
 import { debugLog, debugWarn } from './utils/debug.js';
 
 import { loadHeroLottie } from './lottie.js';
@@ -170,25 +171,18 @@ export class ButtonThemeSwitcher {
     }
 }
 
-// Text Reveal - zachowuję z gałęzi main
-import {
-    setupIntegratedTextReveal,
-    reinitializeTextReveal,
-    debugTriggerPoints
-} from './integratedTextReveal.js';
+// Blur fade-in functionality
+import { setupBlurFadeIn, reinitializeBlurFadeIn } from './blurFadeIn.js';
 
-// Na końcu pliku, po innych inicjalizacjach:
-setupIntegratedTextReveal();
+// Setup blur fade-in animations
+setupBlurFadeIn();
 
-// Debug funkcja (możesz usunąć później)
-window.debugTriggers = debugTriggerPoints;
-
-// Dodaj obsługę resize
+// Add resize handler for blur fade-in
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-        reinitializeTextReveal();
+        reinitializeBlurFadeIn();
     }, 300);
 });
 

@@ -1,5 +1,6 @@
 import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
+import themeManager from './themeManager.js';
 
 // REGISTER
 
@@ -16,7 +17,6 @@ export function setupServicesSection() {
 
         if (isMobile) {
             initMobileStackedCards();
-            initMobileExitTrigger();
         }
 
         if (isDesktop) {
@@ -96,41 +96,28 @@ function initMobileStackedCards() {
             }
         },
         onEnter: () => {
-            document.body.setAttribute('data-theme', 'light');
+            themeManager.setServicesPinned(true);
         },
         onEnterBack: () => {
-            document.body.setAttribute('data-theme', 'light');
+            themeManager.setServicesPinned(true);
         },
         onLeave: () => {
-            const next = document.querySelector('#o-firmie');
-            const nextTheme = next?.getAttribute('data-theme') || 'white';
-            document.body.setAttribute('data-theme', nextTheme);
+            themeManager.setServicesPinned(false);
         },
         onLeaveBack: () => {
-            const prev = document.querySelector('[data-theme][id]:not(#uslugi)');
-            const prevTheme = prev?.getAttribute('data-theme') || 'white';
-            document.body.setAttribute('data-theme', prevTheme);
-        }
-    });
-}
-
-function initMobileExitTrigger() {
-    ScrollTrigger.create({
-        trigger: '#o-firmie',
-        start: 'top center',
-        once: true,
-        onEnter: () => {
-            document.body.setAttribute('data-theme', 'indigo');
+            themeManager.setServicesPinned(false);
         }
     });
 }
 
 function initDesktopSliderCollapse() {
     const section = document.querySelector('#uslugi');
-    const wrap = section.querySelector('.services-wrap');
-    const slider = wrap.querySelector('.services-slider');
+    const wrap = section?.querySelector('.services-wrap');
+    const slider = wrap?.querySelector('.services-slider');
     const items = gsap.utils.toArray('.services-item');
     let collapsedClass = 'collapsed';
+
+    if (!section || !wrap || !slider) return;
 
     const totalScroll = slider.scrollWidth - window.innerWidth;
 
@@ -146,6 +133,8 @@ function initDesktopSliderCollapse() {
             const index = Math.floor(progress * (items.length - 1));
 
             items.forEach((item, i) => {
+                const wasCollapsed = item.classList.contains(collapsedClass);
+
                 if (i < index) {
                     item.classList.add(collapsedClass);
                 } else {
@@ -154,29 +143,44 @@ function initDesktopSliderCollapse() {
 
                 const isFullyExpanded = !item.classList.contains(collapsedClass);
                 const smallText = item.querySelector('p.small');
+
                 if (smallText) {
-                    smallText.style.opacity = isFullyExpanded ? '1' : '0';
-                    smallText.style.transition = 'opacity 0.5s ease';
+                    if (isFullyExpanded && wasCollapsed) {
+                        // Item is transitioning from collapsed to expanded - wait for width transition, then show paragraph
+                        gsap.delayedCall(0.2, () => {
+                            gsap.to(smallText, {
+                                opacity: 1,
+                                duration: 0.1,
+                                ease: 'power2.out'
+                            });
+                        });
+                    } else if (!isFullyExpanded && !wasCollapsed) {
+                        // Item is transitioning from expanded to collapsed - hide immediately
+                        gsap.to(smallText, {
+                            opacity: 0,
+                            duration: 0.1,
+                            ease: 'power2.in'
+                        });
+                    }
                 }
             });
-
-            document.body.setAttribute('data-theme', 'light');
         },
         onEnter: () => {
-            document.body.setAttribute('data-theme', 'light');
+            themeManager.setServicesPinned(true);
         },
         onEnterBack: () => {
-            document.body.setAttribute('data-theme', 'light');
+            themeManager.setServicesPinned(true);
         },
         onLeave: () => {
-            const next = document.querySelector('#o-firmie');
-            const nextTheme = next?.getAttribute('data-theme') || 'white';
-            document.body.setAttribute('data-theme', nextTheme);
+            themeManager.setServicesPinned(false);
         },
         onLeaveBack: () => {
-            const prev = document.querySelector('[data-theme][id]:not(#uslugi)');
-            const prevTheme = prev?.getAttribute('data-theme') || 'white';
-            document.body.setAttribute('data-theme', prevTheme);
+            themeManager.setServicesPinned(false);
         }
     });
+}
+
+// Export the pinned state for other scripts to check
+export function isServicesSectionPinned() {
+    return themeManager.isServicesPinned;
 }

@@ -103,17 +103,17 @@ const HeaderStateManager = {
     }
 };
 
-// Theme colors
-const themeColors = {
-    white: '#ffffff',
-    light: '#f2f2f2',
-    indigo: '#7c7cf8',
-    sky: '#afd9fa',
-    blue: '#3d76f7',
-    orange: '#ff603c',
-    black: '#000000',
-    gray: '#f2f2f2'
-};
+// Theme colors - DISABLED - now handled by themeManager.js
+// const themeColors = {
+//     white: '#ffffff',
+//     light: '#f2f2f2',
+//     indigo: '#7c7cf8',
+//     sky: '#afd9fa',
+//     blue: '#3d76f7',
+//     orange: '#ff603c',
+//     black: '#000000',
+//     gray: '#f2f2f2'
+// };
 
 // DOM elements
 const body = document.body;
@@ -337,53 +337,8 @@ function shouldShowCompactHeader() {
 }
 
 // Background color transitions
-const sections = document.querySelectorAll('main > section, main > section > .about-section, footer');
-gsap.set(body, { backgroundColor: themeColors.white });
-
-function getScrollDistance() {
-    return window.matchMedia('(max-width: 899px)').matches ? 120 : 240;
-}
-
-document.querySelectorAll('[data-theme]').forEach((section, index, arr) => {
-    const currentTheme = section.dataset.theme;
-    const nextSection = arr[index + 1];
-    const nextTheme = nextSection?.dataset.theme;
-    if (!currentTheme || !nextTheme) return;
-
-    ScrollTrigger.create({
-        trigger: section,
-        start: 'bottom center',
-        end: `+=${getScrollDistance()}`,
-        scrub: true,
-        onUpdate: (self) => {
-            const progress = self.progress;
-            const fromRGB = gsap.utils.splitColor(themeColors[currentTheme]);
-            const toRGB = gsap.utils.splitColor(themeColors[nextTheme]);
-            const interpolated = fromRGB.map((c, i) =>
-                Math.round(gsap.utils.interpolate(c, toRGB[i], progress))
-            );
-            gsap.set(body, { backgroundColor: `rgb(${interpolated.join(',')})` });
-
-            const grayThemes = ['hero', 'kontakt'];
-            const isCurrentGray = grayThemes.includes(section.id);
-            const isNextGray = nextSection && grayThemes.includes(nextSection.id);
-            const blend = gsap.utils.interpolate(isCurrentGray ? 1 : 0, isNextGray ? 1 : 0, progress);
-
-            const newBgColor = blend > 0.5 ? themeColors.gray : themeColors.white;
-            gsap.to(headerWrap, {
-                backgroundColor: newBgColor,
-                duration: 0.15,
-                overwrite: 'auto',
-                onUpdate: () => {
-                    updateActiveNavStyling(newBgColor);
-                },
-                onComplete: () => {
-                    updateActiveNavStyling(newBgColor);
-                }
-            });
-        }
-    });
-});
+// Theme system is now handled by themeManager.js
+// This prevents conflicts with the centralized theme management
 
 // POPRAWKA: Uproszczona funkcja updateHeaderUI - bez gap i logo
 function updateHeaderUI() {
@@ -811,8 +766,7 @@ function updateActiveNavStyling(headerBgColor = null) {
         headerBgColor = computedStyle.backgroundColor;
     }
 
-    const isGrayBackground = headerBgColor === themeColors.gray ||
-        headerBgColor === 'rgb(242, 242, 242)' ||
+    const isGrayBackground = headerBgColor === 'rgb(242, 242, 242)' ||
         headerBgColor.includes('242');
 
     navItems.forEach(li => {

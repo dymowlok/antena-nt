@@ -3,29 +3,8 @@ import ScrollTrigger from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Theme system is now handled by themeManager.js
+// This prevents conflicts with the centralized theme management
 export function setupThemeObserver() {
-    const sections = gsap.utils.toArray('[data-theme][id]');
-    const header = document.querySelector('header');
-
-    if (!sections.length) return;
-
-    sections.forEach((section) => {
-        const theme = section.getAttribute('data-theme');
-
-        ScrollTrigger.create({
-            trigger: section,
-            start: 'top center',
-            end: 'bottom center',
-            onEnter: () => setTheme(theme),
-            onEnterBack: () => setTheme(theme),
-        });
-    });
-
-    function setTheme(theme) {
-        document.body.setAttribute('data-theme', theme);
-        if (header) {
-            header.classList.remove('white', 'light', 'indigo', 'sky', 'blue', 'orange', 'black');
-            header.classList.add(theme);
-        }
-    }
+    // Disabled - theme management is now handled by themeManager.js
 }

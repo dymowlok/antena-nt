@@ -183,7 +183,6 @@ headerWrap.addEventListener('mouseleave', () => {
 // Initialize - POPRAWKA: ustaw gap na stałe 1rem
 initializeNavItems();
 headerWrap.style.gap = '1rem';
-gsap.set(header, { top: '-100%', opacity: 0 });
 
 // ONLY essential CSS fixes - NO UI styling changes + REMOVED backdrop-filter
 const essentialStyles = document.createElement('style');
@@ -301,20 +300,72 @@ document.head.appendChild(essentialStyles);
 // Header initialization
 async function initializeHeader() {
     await waitForNavItems();
-    gsap.to(header, {
-        top: '0',
-        opacity: 1,
-        duration: 0.3,
-        delay: 0.1,
-        ease: 'power2.out',
-        onComplete: () => {
-            headerState = HeaderStateManager.states.HERO;
-            updateNavHighlight();
-            // POPRAWKA: Inicjalizuj button theme od razu
-            setTimeout(() => {
-                updateButtonTheme();
-            }, 100);
+
+    if (!header) return;
+
+    // Start with header hidden
+    gsap.set(header, {
+        top: '-100%',
+        opacity: 0
+    });
+
+    // Show header after a short delay to ensure it appears
+    setTimeout(() => {
+        if (header && header.style.opacity === '0') {
+            gsap.to(header, {
+                top: '0',
+                opacity: 1,
+                duration: 0.5,
+                ease: 'power2.out',
+                onComplete: () => {
+                    headerState = HeaderStateManager.states.HERO;
+                    updateNavHighlight();
+                    setTimeout(() => {
+                        updateButtonTheme();
+                    }, 100);
+                }
+            });
         }
+    }, 1000); // Show header after 1 second
+
+    // Also create ScrollTriggers as backup for hero elements
+    const heroElements = [
+        { selector: '.hero-content-text h1', delay: 0.2 },
+        { selector: '.hero-content-text p', delay: 0.4 },
+        { selector: '.hero-buttons', delay: 0.6 },
+        { selector: '.hero-badge', delay: 0.8 }
+    ];
+
+    let headerShown = false;
+
+    heroElements.forEach(({ selector, delay }) => {
+        const element = document.querySelector(selector);
+        if (!element) return;
+
+        ScrollTrigger.create({
+            trigger: element,
+            start: 'top 85%',
+            once: true,
+            onEnter: () => {
+                if (!headerShown && header && header.style.opacity === '0') {
+                    headerShown = true;
+                    gsap.to(header, {
+                        top: '0',
+                        opacity: 1,
+                        duration: 0.5,
+                        delay: delay,
+                        ease: 'power2.out',
+                        onComplete: () => {
+                            headerState = HeaderStateManager.states.HERO;
+                            updateNavHighlight();
+                            setTimeout(() => {
+                                updateButtonTheme();
+                            }, 100);
+                        }
+                    });
+                }
+            }
+        });
     });
 }
 
@@ -559,4 +610,7 @@ function showAllNavItemsOnScrollUp() {
             delay: index * 0.01,
             ease: 'power2.out'
         });
+    }
+}
+
 export { HeaderStateManager, initializeHeader, updateHeaderUI, hideInactiveNavItems, showAllNavItemsOnScrollUp, showAllNavItems, updateNavHighlight, headerWrap, headerNav, headerDesktopMenu, headerBgOverlay, navItems, isDesktopMenuOpen, body, headerButton, headerDot, heroSection, currentActiveSection, headerState, currentButtonTheme, isScrollingUp, scrollUpTimer };
