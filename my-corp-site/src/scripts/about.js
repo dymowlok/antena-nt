@@ -40,26 +40,6 @@ export function setupAboutSection() {
         });
     }
 
-    // Helper function to get theme color
-    function getThemeColor(theme) {
-        const themeColors = {
-            'indigo': '#6366f1',
-            'sky': '#0ea5e9',
-            'blue': '#3b82f6',
-            'orange': '#f97316',
-            'light': '#f8fafc',
-            'white': '#ffffff',
-            'black': '#000000'
-        };
-        return themeColors[theme] || '#ffffff';
-    }
-
-    // Set theme instantly for about sections
-    function setThemeInstantly(theme) {
-        document.body.style.backgroundColor = getThemeColor(theme);
-        document.body.setAttribute('data-theme', theme);
-    }
-
     // Function to update assets and content based on body background color
     function updateAssetsAndContent() {
         const bodyBgColor = document.body.style.backgroundColor;
@@ -78,37 +58,6 @@ export function setupAboutSection() {
             showContent(2);
         }
     }
-
-    // On scroll, find the section that's most visible and update theme
-    function handleScroll() {
-        let mostVisibleSection = null;
-        let maxVisibility = 0;
-
-        sections.forEach(section => {
-            const rect = section.getBoundingClientRect();
-            const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
-
-            if (visibleHeight > maxVisibility) {
-                maxVisibility = visibleHeight;
-                mostVisibleSection = section;
-            }
-        });
-
-        if (mostVisibleSection && mostVisibleSection !== lastActiveSection) {
-            lastActiveSection = mostVisibleSection;
-            const theme = mostVisibleSection.getAttribute('data-theme');
-            if (theme) setThemeInstantly(theme);
-        }
-    }
-
-    // Initial state
-    handleScroll();
-
-    // Listen to scroll events
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    // Also update on resize (in case of layout changes)
-    window.addEventListener('resize', handleScroll);
 
     // Monitor body background color changes
     const observer = new MutationObserver(() => {
