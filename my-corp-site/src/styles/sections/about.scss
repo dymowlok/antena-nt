@@ -1,11 +1,13 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/colors" as *;
+
 .about {
     display: flex;
     justify-content: space-between;
     gap: 5rem;
     padding-top: 7.5rem;
     padding-bottom: 7.5rem;
+    height: calc(300vh + 15rem);
 
     @media #{$lap-and-up} {
         padding-top: 15rem;
@@ -21,11 +23,14 @@
     &-asset-wrap {
         position: sticky;
         top: 11.5rem;
-        z-index: 2;
+        z-index: 4;
+        border-radius: 2.5rem;
+        overflow: hidden;
+        background: white;
 
         @media #{$pocket} {
             width: 100%;
-            height: 50vh;
+            min-height: calc(50vh - 7.5rem);
             aspect-ratio: 1/1;
         }
 
@@ -40,30 +45,75 @@
     &-asset {
         width: 100%;
         height: 100%;
-        background-color: $orange;
         border-radius: 1.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.6s ease-out;
+
+        &.active {
+            opacity: 1;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     }
 
     &-wrap {
+        @media #{$pocket} {
+            height: 300vh;
+        }
+
         @media #{$lap-and-up} {
             width: calc(50% - 2.5rem);
             flex-basis: calc(50% - 2.5rem);
+            height: 100%;
+            height: 100%;
+
+            position: relative;
+            top: 0;
         }
     }
 
     &-section {
         height: 100vh;
         position: relative;
+        position: sticky;
+        top: 0;
+
+        &:nth-of-type(1) {
+            z-index: 1;
+
+            @media #{$pocket} {
+                margin-top: calc(-50vh - 7.5rem);
+            }
+        }
+
+        &:nth-of-type(2) {
+            z-index: 2;
+        }
+
+        &:nth-of-type(3) {
+            z-index: 3;
+        }
     }
 
     &-content {
         position: sticky;
         top: 0;
         height: 100%;
-        justify-content: flex-end;
+        justify-content: flex-start;
+
+        @media #{$pocket} {
+            padding-top: calc(50vh + 7.5rem);
+        }
 
         @media #{$lap-and-up} {
             justify-content: center;
