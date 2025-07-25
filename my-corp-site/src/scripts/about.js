@@ -7,26 +7,35 @@ export function setupAboutSection() {
     const aboutSection = document.querySelector('#o-firmie');
     if (!aboutSection) return;
 
-    const scrollContainer = aboutSection.querySelector('.about-sections-scroll');
-    if (!scrollContainer) return;
-
     const assets = {
         experience: aboutSection.querySelector('#about-asset-experience'),
         quarantee: aboutSection.querySelector('#about-asset-quarantee'),
         service: aboutSection.querySelector('#about-asset-service')
     };
 
-    const sections = scrollContainer.querySelectorAll('.about-section');
+    const sections = aboutSection.querySelectorAll('.about-section');
+    const contents = aboutSection.querySelectorAll('.about-content');
     let lastActiveSection = null;
 
-    // Helper function to show asset
+    // Helper function to show asset with smooth transition
     function showAsset(key) {
         Object.entries(assets).forEach(([id, el]) => {
             if (!el) return;
             if (id === key) {
-                el.classList.add('active');
+                gsap.to(el, { opacity: 1, duration: 0.6, ease: 'power2.out' });
             } else {
-                el.classList.remove('active');
+                gsap.to(el, { opacity: 0, duration: 0.6, ease: 'power2.out' });
+            }
+        });
+    }
+
+    // Helper function to show content with smooth transition
+    function showContent(index) {
+        contents.forEach((content, i) => {
+            if (i === index) {
+                gsap.to(content, { opacity: 1, duration: 0.6, ease: 'power2.out' });
+            } else {
+                gsap.to(content, { opacity: 0, duration: 0.6, ease: 'power2.out' });
             }
         });
     }
@@ -51,27 +60,43 @@ export function setupAboutSection() {
         document.body.setAttribute('data-theme', theme);
     }
 
-    // On scroll, find the section snapped to the top and update asset/theme
+    // Function to update assets and content based on body background color
+    function updateAssetsAndContent() {
+        const bodyBgColor = document.body.style.backgroundColor;
+
+        if (bodyBgColor === 'rgb(124, 124, 248)' || bodyBgColor === 'rgb(99, 102, 241)') {
+            // Indigo - first section
+            showAsset('experience');
+            showContent(0);
+        } else if (bodyBgColor === 'rgb(175, 217, 250)' || bodyBgColor === 'rgb(14, 165, 233)') {
+            // Sky - second section
+            showAsset('quarantee');
+            showContent(1);
+        } else if (bodyBgColor === 'rgb(61, 118, 247)' || bodyBgColor === 'rgb(59, 130, 246)') {
+            // Blue - third section
+            showAsset('service');
+            showContent(2);
+        }
+    }
+
+    // On scroll, find the section that's most visible and update theme
     function handleScroll() {
-        let minDistance = Infinity;
-        let activeSection = null;
-        const containerRect = scrollContainer.getBoundingClientRect();
+        let mostVisibleSection = null;
+        let maxVisibility = 0;
 
         sections.forEach(section => {
             const rect = section.getBoundingClientRect();
-            // Distance from section top to container top
-            const distance = Math.abs(rect.top - containerRect.top);
-            if (distance < minDistance) {
-                minDistance = distance;
-                activeSection = section;
+            const visibleHeight = Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0);
+
+            if (visibleHeight > maxVisibility) {
+                maxVisibility = visibleHeight;
+                mostVisibleSection = section;
             }
         });
 
-        if (activeSection && activeSection !== lastActiveSection) {
-            lastActiveSection = activeSection;
-            const sectionId = activeSection.id;
-            const theme = activeSection.getAttribute('data-theme');
-            showAsset(sectionId);
+        if (mostVisibleSection && mostVisibleSection !== lastActiveSection) {
+            lastActiveSection = mostVisibleSection;
+            const theme = mostVisibleSection.getAttribute('data-theme');
             if (theme) setThemeInstantly(theme);
         }
     }
@@ -79,9 +104,22 @@ export function setupAboutSection() {
     // Initial state
     handleScroll();
 
-    // Listen to scroll events on the scroll container
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    // Listen to scroll events
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     // Also update on resize (in case of layout changes)
     window.addEventListener('resize', handleScroll);
+
+    // Monitor body background color changes
+    const observer = new MutationObserver(() => {
+        updateAssetsAndContent();
+    });
+
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['style']
+    });
+
+    // Initial update
+    updateAssetsAndContent();
 }
