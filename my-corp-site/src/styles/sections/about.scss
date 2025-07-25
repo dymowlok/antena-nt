@@ -8,6 +8,7 @@
     padding-top: 7.5rem;
     padding-bottom: 7.5rem;
     height: calc(300vh + 15rem);
+    border-top: 5px solid red;
 
     @media #{$lap-and-up} {
         padding-top: 15rem;

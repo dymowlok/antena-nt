@@ -1,7 +1,5 @@
 // main.js – NAPRAWIONA WERSJA (po rozwiązaniu konfliktu merge)
 
-console.log('🚀 main.js is loading...');
-
 import '../styles/main.scss';
 import './theme.js';
 import './themeManager.js'; // Initialize theme manager
@@ -198,7 +196,6 @@ import './desktopMenu.js';
 function updateHeaderBackground() {
     const headerWrap = document.querySelector('.header-wrap');
     if (!headerWrap) {
-        console.log('❌ header-wrap not found');
         return;
     }
 
@@ -212,22 +209,15 @@ function updateHeaderBackground() {
 
         if (visibleHeight > 0 && rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
             currentTheme = section.getAttribute('data-theme') || 'white';
-            console.log('🎯 Current theme:', currentTheme, 'from element:', section.tagName, section.id || section.className);
             break;
         }
     }
 
-    console.log('🎨 Setting header-wrap background for theme:', currentTheme);
-
     if (currentTheme === 'white') {
         headerWrap.style.setProperty('background-color', '#f7f7f7', 'important');
-        console.log('⬜ Set header-wrap to #f7f7f7 (white theme)');
     } else {
         headerWrap.style.setProperty('background-color', '#fff', 'important');
-        console.log('⚪ Set header-wrap to #fff (other theme)');
     }
-
-    console.log('✅ Final header-wrap background-color:', headerWrap.style.backgroundColor);
 }
 
 // Debounced version to prevent too frequent updates
@@ -243,7 +233,6 @@ function setInitialHeaderBackground() {
     if (headerWrap) {
         // Start with white background (most common case)
         headerWrap.style.setProperty('background-color', '#fff', 'important');
-        console.log('🚀 Set initial header background to #fff');
     }
 }
 
@@ -258,7 +247,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Run again after a short delay
 setTimeout(() => {
-    console.log('🚀 Initializing header background color logic');
     updateHeaderBackground();
     window.addEventListener('scroll', debouncedUpdateHeaderBackground);
 }, 100); // Reduced delay
@@ -267,5 +255,3 @@ setTimeout(() => {
 window.addEventListener('load', () => {
     updateHeaderBackground();
 });
-
-console.log('✅ main.js finished loading');

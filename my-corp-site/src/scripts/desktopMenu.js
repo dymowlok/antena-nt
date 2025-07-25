@@ -7,7 +7,6 @@ import { headerDesktopMenu, headerBgOverlay, headerWrap, body, navItems, isDeskt
 let desktopMenuTimeout = null;
 let hasSubmenuItems = false;
 
-console.log('📦 desktopMenu.js is loading...');
 // Desktop menu functionality
 function setupDesktopMenu() {
     renderDesktopMenu();
@@ -259,16 +258,10 @@ function updateActiveNavStyling(headerBgColor = null) {
         updateActiveNavStyling.isRunning = false;
     }, 100);
 
-    console.log('🔄 updateActiveNavStyling called');
-
     // Use the imported headerWrap or find it if not available
     let headerWrapElement = headerWrap || document.querySelector('.header-wrap');
-    console.log('🔍 headerWrap element (imported):', headerWrap);
-    console.log('🔍 headerWrap element (queried):', document.querySelector('.header-wrap'));
-    console.log('🔍 Using headerWrap element:', headerWrapElement);
 
     if (!headerWrapElement) {
-        console.log('❌ headerWrap not found!');
         return;
     }
 
@@ -276,19 +269,15 @@ function updateActiveNavStyling(headerBgColor = null) {
     const sections = document.querySelectorAll('[data-theme]');
     let currentTheme = 'white'; // default
 
-    console.log('📋 Found elements with data-theme:', sections.length);
 
     for (const section of sections) {
         const rect = section.getBoundingClientRect();
-        console.log('📍 Element:', section.tagName, section.id || section.className, 'data-theme:', section.getAttribute('data-theme'), 'rect:', rect.top, rect.bottom);
         if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
             currentTheme = section.getAttribute('data-theme');
-            console.log('🎯 Current theme:', currentTheme, 'from element:', section.tagName, section.id || section.className);
             break;
         }
     }
 
-    console.log('🎨 Setting header-wrap background for theme:', currentTheme);
 
     // REMOVED: Header background color logic - now handled in main.js
     // This prevents conflicts between multiple scripts setting the same property
@@ -296,7 +285,6 @@ function updateActiveNavStyling(headerBgColor = null) {
     // Get the current background color from the element
     const computedStyle = window.getComputedStyle(headerWrapElement);
     headerBgColor = computedStyle.backgroundColor;
-    console.log('✅ Final header-wrap background-color:', headerBgColor);
 
     const isGrayBackground = headerBgColor === '#f7f7f7' ||
         headerBgColor === 'rgb(247, 247, 247)';
@@ -323,8 +311,5 @@ updateActiveNavStyling.isRunning = false;
 
 // Make function globally available
 window.updateActiveNavStyling = updateActiveNavStyling;
-
-console.log('✅ desktopMenu.js finished loading');
-console.log('🔧 updateActiveNavStyling function available globally');
 
 export { setupDesktopMenu, showDesktopMenu, hideDesktopMenu };

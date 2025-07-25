@@ -3,10 +3,11 @@
 
 .services {
     padding: 7.5rem 2.5rem;
-    height: 100dvh;
-    height: 100vh;
+    height: max-content;
 
     @media #{$lap-and-up} {
+        height: 100dvh;
+        height: 100vh;
         padding: 15rem 0;
         overflow-x: hidden;
         max-width: 100%;
@@ -17,7 +18,8 @@
         width: 100%;
 
         @media #{$pocket} {
-            height: calc(8 * (100vh - 14rem));
+            height: max-content;
+            min-height: calc(800vh - 11rem);
         }
 
         @media #{$lap-and-up} {

@@ -1,6 +1,7 @@
 import { gsap } from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import themeManager from './themeManager.js';
+import lenis from './utils/lenis.js';
 
 // REGISTER
 
@@ -13,7 +14,7 @@ export function setupServicesSection() {
         isMobile: '(max-width: 899px)',
         isDesktop: '(min-width: 900px)'
     }, (context) => {
-        const { isMobile, isDesktop } = context.conditions;
+        const { isMobile, isDesktop } = context.conditions || {};
 
         if (isMobile) {
             initMobileStackedCards();
@@ -35,79 +36,9 @@ function updateServicesSectionHeight() {
 
     const items = slider.querySelectorAll('.services-item');
     const itemHeight = window.innerHeight - 140; // approx based on 14rem top spacing
-    section.style.height = `${items.length * itemHeight}px`;
-}
-
-function initMobileStackedCards() {
-    const items = gsap.utils.toArray('.services-item');
-    const total = items.length;
-    let activeIndex = 0;
-
-    items.forEach((item, index) => {
-        const depth = total - index;
-        item.style.zIndex = depth;
-        gsap.set(item, {
-            rotate: index * -1.5,
-            scale: 1 - index * 0.03,
-            filter: `brightness(${1 - index * 0.1})`,
-            yPercent: -index * 5,
-        });
-    });
-
-    const st = ScrollTrigger.create({
-        trigger: '.services-slider',
-        start: 'top top',
-        end: `+=${window.innerHeight * (total - 1)}`,
-        scrub: true,
-        snap: 1 / (total - 1),
-        pin: true,
-        anticipatePin: 1,
-        onUpdate: (self) => {
-            const newIndex = Math.round(self.progress * (total - 1));
-            if (newIndex !== activeIndex) {
-                activeIndex = newIndex;
-                items.forEach((item, index) => {
-                    if (index < newIndex) {
-                        gsap.to(item, {
-                            rotate: -3,
-                            scale: 0.9,
-                            filter: 'brightness(0.4)',
-                            yPercent: -5,
-                            duration: 0.3
-                        });
-                    } else if (index === newIndex) {
-                        gsap.to(item, {
-                            rotate: 0,
-                            scale: 1,
-                            filter: 'brightness(1)',
-                            yPercent: 0,
-                            duration: 0.3
-                        });
-                    } else {
-                        gsap.to(item, {
-                            rotate: index * -1.5,
-                            scale: 1 - index * 0.03,
-                            filter: `brightness(${1 - index * 0.1})`,
-                            yPercent: -index * 5,
-                            duration: 0.3
-                        });
-                    }
-                });
-            }
-        },
-        onEnter: () => {
-            themeManager.setServicesPinned(true);
-        },
-        onEnterBack: () => {
-            themeManager.setServicesPinned(true);
-        },
-        onLeave: () => {
-            themeManager.setServicesPinned(false);
-        },
-        onLeaveBack: () => {
-            themeManager.setServicesPinned(false);
-        }
-    });
+    if (section instanceof HTMLElement) {
+        section.style.height = `${items.length * itemHeight}px`;
+    }
 }
 
 function initDesktopSliderCollapse() {
@@ -165,6 +96,140 @@ function initDesktopSliderCollapse() {
                 }
             });
         },
+        onEnter: () => {
+            themeManager.setServicesPinned(true);
+        },
+        onEnterBack: () => {
+            themeManager.setServicesPinned(true);
+        },
+        onLeave: () => {
+            themeManager.setServicesPinned(false);
+        },
+        onLeaveBack: () => {
+            themeManager.setServicesPinned(false);
+        }
+    });
+}
+
+function initMobileStackedCards() {
+    const section = document.querySelector('#uslugi');
+    const items = gsap.utils.toArray('.services-item');
+
+    if (!section || items.length === 0) return;
+
+    // Generate random rotations for each card (-8deg to 8deg)
+    const cardRotations = items.map(() => (Math.random() - 0.5) * 16); // -8 to 8 degrees
+
+    // Set initial states for all items
+    items.forEach((item, index) => {
+        gsap.set(item, {
+            zIndex: items.length - index,
+            opacity: 1, // All cards always have full opacity
+            scale: 1,
+            y: 0,
+            rotation: 0,
+            filter: 'brightness(1)'
+        });
+    });
+
+    // Create discrete scroll triggers for each card transition
+    items.forEach((item, index) => {
+        const isLast = index === items.length - 1;
+
+        // Calculate the scroll position where this card should become active
+        const cardHeight = window.innerHeight - 140; // Approx card height
+        const triggerStart = index * cardHeight;
+        const triggerEnd = (index + 1) * cardHeight;
+
+        ScrollTrigger.create({
+            trigger: section,
+            start: `top+=${triggerStart} top`,
+            end: `top+=${triggerEnd} top`,
+            scrub: false, // No scrubbing for discrete behavior
+            onEnter: () => {
+                // This card becomes active - reset to normal state
+                gsap.to(item, {
+                    scale: 1,
+                    y: 0,
+                    rotation: 0,
+                    filter: 'brightness(1)',
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+
+                // Apply depth effects to all previous cards
+                for (let i = 0; i < index; i++) {
+                    const depthLevel = index - i;
+                    const prevItem = items[i];
+
+                    gsap.to(prevItem, {
+                        scale: 1 - (depthLevel * 0.05), // 0.95, 0.90, 0.85, etc.
+                        y: -depthLevel * 0.5, // -0.5rem, -1rem, -1.5rem, etc.
+                        rotation: cardRotations[i], // Use pre-generated random rotation
+                        filter: `brightness(${1 - (depthLevel * 0.1)})`, // 0.9, 0.8, 0.7, etc.
+                        duration: 0.2,
+                        ease: 'power2.out'
+                    });
+                }
+            },
+            onEnterBack: () => {
+                // When scrolling back up, this card becomes active again
+                gsap.to(item, {
+                    scale: 1,
+                    y: 0,
+                    rotation: 0,
+                    filter: 'brightness(1)',
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+
+                // Recalculate depth effects for cards below this one
+                for (let i = 0; i < index; i++) {
+                    const depthLevel = index - i;
+                    const prevItem = items[i];
+
+                    gsap.to(prevItem, {
+                        scale: 1 - (depthLevel * 0.05),
+                        y: -depthLevel * 0.5,
+                        rotation: cardRotations[i],
+                        filter: `brightness(${1 - (depthLevel * 0.1)})`,
+                        duration: 0.2,
+                        ease: 'power2.out'
+                    });
+                }
+            },
+            onLeave: () => {
+                // When scrolling down past this card, apply depth effect
+                const depthLevel = 1;
+                gsap.to(item, {
+                    scale: 1 - (depthLevel * 0.05),
+                    y: -depthLevel * 0.5,
+                    rotation: cardRotations[index],
+                    filter: `brightness(${1 - (depthLevel * 0.1)})`,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            },
+            onLeaveBack: () => {
+                // When scrolling back up past this card, apply depth effect
+                const depthLevel = 1;
+                gsap.to(item, {
+                    scale: 1 - (depthLevel * 0.05),
+                    y: -depthLevel * 0.5,
+                    rotation: cardRotations[index],
+                    filter: `brightness(${1 - (depthLevel * 0.1)})`,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            }
+        });
+    });
+
+    // Add smooth scroll behavior for the section
+    ScrollTrigger.create({
+        trigger: section,
+        start: 'top top',
+        end: 'bottom bottom',
         onEnter: () => {
             themeManager.setServicesPinned(true);
         },
