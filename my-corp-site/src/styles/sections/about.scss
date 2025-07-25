@@ -117,6 +117,100 @@
 
         @media #{$lap-and-up} {
             justify-content: center;
+            padding-top: 7.5rem;
         }
     }
 }
+
+// body {
+//     &[style="background-color: rgb(124, 124, 248);"] {
+//         .about-asset {
+//             &:nth-of-type(1) {
+//                 opacity: 1 !important;
+//             }
+//             &:nth-of-type(2) {
+//                 opacity: 0 !important;
+//             }
+//             &:nth-of-type(3) {
+//                 opacity: 0 !important;
+//             }
+//         }
+//         .about-section {
+//             &:nth-of-type(1) {
+//                 .about-content {
+//                     opacity: 1;
+//                 }
+//             }
+//             &:nth-of-type(2) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//             &:nth-of-type(3) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//         }
+//     }
+//     &[style="background-color: rgb(175, 217, 250);"] {
+//         .about-asset {
+//             &:nth-of-type(1) {
+//                 opacity: 0 !important;
+//             }
+//             &:nth-of-type(2) {
+//                 opacity: 1 !important;
+//             }
+//             &:nth-of-type(3) {
+//                 opacity: 0 !important;
+//             }
+//         }
+//         .about-section {
+//             &:nth-of-type(1) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//             &:nth-of-type(2) {
+//                 .about-content {
+//                     opacity: 1;
+//                 }
+//             }
+//             &:nth-of-type(3) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//         }
+//     }
+//     &[style="background-color: rgb(61, 118, 247);"] {
+//         .about-asset {
+//             &:nth-of-type(1) {
+//                 opacity: 0 !important;
+//             }
+//             &:nth-of-type(2) {
+//                 opacity: 0 !important;
+//             }
+//             &:nth-of-type(3) {
+//                 opacity: 1 !important;
+//             }
+//         }
+//         .about-section {
+//             &:nth-of-type(1) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//             &:nth-of-type(2) {
+//                 .about-content {
+//                     opacity: 0;
+//                 }
+//             }
+//             &:nth-of-type(3) {
+//                 .about-content {
+//                     opacity: 1;
+//                 }
+//             }
+//         }
+//     }
+// }

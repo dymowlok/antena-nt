@@ -24,6 +24,10 @@
             padding: 0 5rem;
             align-items: stretch;
         }
+
+        @media #{$widescreen} {
+            padding: 0 15rem;
+        }
     }
 
     &-item {

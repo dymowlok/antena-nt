@@ -7,17 +7,20 @@ export function setupAboutSection() {
     const aboutSection = document.querySelector('#o-firmie');
     if (!aboutSection) return;
 
+    const scrollContainer = aboutSection.querySelector('.about-sections-scroll');
+    if (!scrollContainer) return;
+
     const assets = {
         experience: aboutSection.querySelector('#about-asset-experience'),
         quarantee: aboutSection.querySelector('#about-asset-quarantee'),
         service: aboutSection.querySelector('#about-asset-service')
     };
 
-    const sections = aboutSection.querySelectorAll('.about-section');
+    const sections = scrollContainer.querySelectorAll('.about-section');
+    let lastActiveSection = null;
 
     // Helper function to show asset
     function showAsset(key) {
-        console.log('🖼️ Showing asset:', key);
         Object.entries(assets).forEach(([id, el]) => {
             if (!el) return;
             if (id === key) {
@@ -28,58 +31,57 @@ export function setupAboutSection() {
         });
     }
 
-    // Function to determine which section is most visible within the about section
-    function updateActiveAsset() {
-        if (!aboutSection) return;
+    // Helper function to get theme color
+    function getThemeColor(theme) {
+        const themeColors = {
+            'indigo': '#6366f1',
+            'sky': '#0ea5e9',
+            'blue': '#3b82f6',
+            'orange': '#f97316',
+            'light': '#f8fafc',
+            'white': '#ffffff',
+            'black': '#000000'
+        };
+        return themeColors[theme] || '#ffffff';
+    }
 
-        const aboutRect = aboutSection.getBoundingClientRect();
+    // Set theme instantly for about sections
+    function setThemeInstantly(theme) {
+        document.body.style.backgroundColor = getThemeColor(theme);
+        document.body.setAttribute('data-theme', theme);
+    }
 
-        // Only proceed if the about section is actually visible
-        if (aboutRect.top > window.innerHeight || aboutRect.bottom < 0) {
-            return;
-        }
-
-        // Find which section has its center closest to the viewport center
+    // On scroll, find the section snapped to the top and update asset/theme
+    function handleScroll() {
+        let minDistance = Infinity;
         let activeSection = null;
-        const viewportCenter = window.innerHeight / 2;
+        const containerRect = scrollContainer.getBoundingClientRect();
 
-        sections.forEach((section, index) => {
+        sections.forEach(section => {
             const rect = section.getBoundingClientRect();
-            const sectionCenter = rect.top + rect.height / 2;
-            const distanceFromCenter = Math.abs(sectionCenter - viewportCenter);
-
-            console.log(`Section ${index + 1} (${section.id}):`, {
-                top: Math.round(rect.top),
-                bottom: Math.round(rect.bottom),
-                center: Math.round(sectionCenter),
-                distanceFromCenter: Math.round(distanceFromCenter),
-                isInViewport: rect.top <= viewportCenter && rect.bottom >= viewportCenter
-            });
-
-            // If this section is the closest to viewport center and is visible
-            if (rect.top <= viewportCenter && rect.bottom >= viewportCenter) {
-                if (!activeSection || distanceFromCenter < Math.abs(activeSection.getBoundingClientRect().top + activeSection.getBoundingClientRect().height / 2 - viewportCenter)) {
-                    activeSection = section;
-                }
+            // Distance from section top to container top
+            const distance = Math.abs(rect.top - containerRect.top);
+            if (distance < minDistance) {
+                minDistance = distance;
+                activeSection = section;
             }
         });
 
-        console.log('🎯 Active section:', activeSection ? activeSection.id : 'none');
-
-        if (activeSection) {
-            showAsset(activeSection.id);
+        if (activeSection && activeSection !== lastActiveSection) {
+            lastActiveSection = activeSection;
+            const sectionId = activeSection.id;
+            const theme = activeSection.getAttribute('data-theme');
+            showAsset(sectionId);
+            if (theme) setThemeInstantly(theme);
         }
     }
 
-    // Create a single ScrollTrigger for the entire about section
-    ScrollTrigger.create({
-        trigger: aboutSection,
-        start: 'top bottom',
-        end: 'bottom top',
-        onUpdate: updateActiveAsset,
-        onEnter: updateActiveAsset,
-        onLeave: updateActiveAsset,
-        onEnterBack: updateActiveAsset,
-        onLeaveBack: updateActiveAsset
-    });
+    // Initial state
+    handleScroll();
+
+    // Listen to scroll events on the scroll container
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Also update on resize (in case of layout changes)
+    window.addEventListener('resize', handleScroll);
 }
