@@ -4,7 +4,6 @@ import themeManager from './themeManager.js';
 import lenis from './utils/lenis.js';
 
 // REGISTER
-
 gsap.registerPlugin(ScrollTrigger);
 
 export function setupServicesSection() {
@@ -24,7 +23,9 @@ export function setupServicesSection() {
             initDesktopSliderCollapse();
         }
 
-        updateServicesSectionHeight();
+        if (isDesktop) {
+            updateServicesSectionHeight();
+        }
     });
 }
 
@@ -77,7 +78,7 @@ function initDesktopSliderCollapse() {
 
                 if (smallText) {
                     if (isFullyExpanded && wasCollapsed) {
-                        // Item is transitioning from collapsed to expanded - wait for width transition, then show paragraph
+                        // Item is transitioning from collapsed to expanded
                         gsap.delayedCall(0.25, () => {
                             gsap.to(smallText, {
                                 opacity: 1,
@@ -86,7 +87,7 @@ function initDesktopSliderCollapse() {
                             });
                         });
                     } else if (!isFullyExpanded && !wasCollapsed) {
-                        // Item is transitioning from expanded to collapsed - hide immediately
+                        // Item is transitioning from expanded to collapsed
                         gsap.to(smallText, {
                             opacity: 0,
                             duration: 0.1,
@@ -112,140 +113,68 @@ function initDesktopSliderCollapse() {
 }
 
 function initMobileStackedCards() {
-    const section = document.querySelector('#uslugi');
     const items = gsap.utils.toArray('.services-item');
+    const cardRotations = items.map(() => (Math.random() - 0.5) * 16); // losowe obroty
 
-    if (!section || items.length === 0) return;
+    if (items.length === 0) return;
 
-    // Generate random rotations for each card (-8deg to 8deg)
-    const cardRotations = items.map(() => (Math.random() - 0.5) * 16); // -8 to 8 degrees
-
-    // Set initial states for all items
     items.forEach((item, index) => {
         gsap.set(item, {
             zIndex: items.length - index,
-            opacity: 1, // All cards always have full opacity
-            scale: 1,
-            y: 0,
             rotation: 0,
-            filter: 'brightness(1)'
+            filter: 'brightness(1)',
+            scale: 1,
+            y: 0
         });
-    });
-
-    // Create discrete scroll triggers for each card transition
-    items.forEach((item, index) => {
-        const isLast = index === items.length - 1;
-
-        // Calculate the scroll position where this card should become active
-        const cardHeight = window.innerHeight - 140; // Approx card height
-        const triggerStart = index * cardHeight;
-        const triggerEnd = (index + 1) * cardHeight;
 
         ScrollTrigger.create({
-            trigger: section,
-            start: `top+=${triggerStart} top`,
-            end: `top+=${triggerEnd} top`,
-            scrub: false, // No scrubbing for discrete behavior
-            onEnter: () => {
-                // This card becomes active - reset to normal state
-                gsap.to(item, {
-                    scale: 1,
-                    y: 0,
-                    rotation: 0,
-                    filter: 'brightness(1)',
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-
-                // Apply depth effects to all previous cards
-                for (let i = 0; i < index; i++) {
-                    const depthLevel = index - i;
-                    const prevItem = items[i];
-
-                    gsap.to(prevItem, {
-                        scale: 1 - (depthLevel * 0.05), // 0.95, 0.90, 0.85, etc.
-                        y: -depthLevel * 0.5, // -0.5rem, -1rem, -1.5rem, etc.
-                        rotation: cardRotations[i], // Use pre-generated random rotation
-                        filter: `brightness(${1 - (depthLevel * 0.1)})`, // 0.9, 0.8, 0.7, etc.
-                        duration: 0.2,
-                        ease: 'power2.out'
-                    });
-                }
-            },
-            onEnterBack: () => {
-                // When scrolling back up, this card becomes active again
-                gsap.to(item, {
-                    scale: 1,
-                    y: 0,
-                    rotation: 0,
-                    filter: 'brightness(1)',
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-
-                // Recalculate depth effects for cards below this one
-                for (let i = 0; i < index; i++) {
-                    const depthLevel = index - i;
-                    const prevItem = items[i];
-
-                    gsap.to(prevItem, {
-                        scale: 1 - (depthLevel * 0.05),
-                        y: -depthLevel * 0.5,
-                        rotation: cardRotations[i],
-                        filter: `brightness(${1 - (depthLevel * 0.1)})`,
-                        duration: 0.2,
-                        ease: 'power2.out'
-                    });
-                }
-            },
-            onLeave: () => {
-                // When scrolling down past this card, apply depth effect
-                const depthLevel = 1;
-                gsap.to(item, {
-                    scale: 1 - (depthLevel * 0.05),
-                    y: -depthLevel * 0.5,
-                    rotation: cardRotations[index],
-                    filter: `brightness(${1 - (depthLevel * 0.1)})`,
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            },
-            onLeaveBack: () => {
-                // When scrolling back up past this card, apply depth effect
-                const depthLevel = 1;
-                gsap.to(item, {
-                    scale: 1 - (depthLevel * 0.05),
-                    y: -depthLevel * 0.5,
-                    rotation: cardRotations[index],
-                    filter: `brightness(${1 - (depthLevel * 0.1)})`,
-                    duration: 0.2,
-                    ease: 'power2.out'
-                });
-            }
+            trigger: item,
+            start: 'top top',
+            snap: 1,
+            onEnter: () => applyDepthEffects(items, index, cardRotations),
+            onEnterBack: () => applyDepthEffects(items, index, cardRotations)
         });
     });
 
-    // Add smooth scroll behavior for the section
     ScrollTrigger.create({
-        trigger: section,
+        trigger: '.services-slider',
         start: 'top top',
         end: 'bottom bottom',
-        onEnter: () => {
-            themeManager.setServicesPinned(true);
-        },
-        onEnterBack: () => {
-            themeManager.setServicesPinned(true);
-        },
-        onLeave: () => {
-            themeManager.setServicesPinned(false);
-        },
-        onLeaveBack: () => {
-            themeManager.setServicesPinned(false);
+        onEnter: () => themeManager.setServicesPinned(true),
+        onEnterBack: () => themeManager.setServicesPinned(true),
+        onLeave: () => themeManager.setServicesPinned(false),
+        onLeaveBack: () => themeManager.setServicesPinned(false)
+    });
+}
+
+function applyDepthEffects(items, currentIndex, rotations) {
+    items.forEach((item, i) => {
+        if (i < currentIndex) {
+            const depth = currentIndex - i;
+            gsap.to(item, {
+                scale: 1 - (depth * 0.05),
+                y: -depth * 0.5,
+                rotation: rotations[i],
+                filter: `brightness(${1 - (depth * 0.1)})`,
+                duration: 0.25,
+                ease: 'power2.out'
+            });
+        } else {
+            gsap.to(item, {
+                scale: 1,
+                y: 0,
+                rotation: 0,
+                filter: 'brightness(1)',
+                duration: 0.25,
+                ease: 'power2.out'
+            });
         }
     });
 }
 
+
+
 // Export the pinned state for other scripts to check
 export function isServicesSectionPinned() {
     return themeManager.isServicesPinned;
-}
+}  

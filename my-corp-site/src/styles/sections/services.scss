@@ -19,7 +19,9 @@
 
         @media #{$pocket} {
             height: max-content;
-            min-height: calc(800vh - 11rem);
+            // min-height: calc(800vh - 11rem);
+
+            min-height: calc(calc((100vh - 14rem) * 8) + calc(7 * 1.5rem)); // np. 8 kart = 8 * cardHeight
         }
 
         @media #{$lap-and-up} {
