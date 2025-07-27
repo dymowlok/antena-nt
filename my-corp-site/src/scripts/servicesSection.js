@@ -21,9 +21,6 @@ export function setupServicesSection() {
 
         if (isDesktop) {
             initDesktopSliderCollapse();
-        }
-
-        if (isDesktop) {
             updateServicesSectionHeight();
         }
     });
@@ -114,28 +111,71 @@ function initDesktopSliderCollapse() {
 
 function initMobileStackedCards() {
     const items = gsap.utils.toArray('.services-item');
-    const cardRotations = items.map(() => (Math.random() - 0.5) * 16); // losowe obroty
+    const cardRotations = items.map(() => (Math.random() - 0.5) * 8);
+    const GAP = 15;
+    const STICKY_TOP = 115;
 
     if (items.length === 0) return;
 
     items.forEach((item, index) => {
+        const prev = items[index - 1];
+
         gsap.set(item, {
-            zIndex: items.length - index,
             rotation: 0,
             filter: 'brightness(1)',
             scale: 1,
             y: 0
         });
 
+        if (prev) {
+            ScrollTrigger.create({
+                trigger: item,
+                start: `top center+=50%`,
+                end: `bottom center-=25%`,
+                scrub: true,
+                onUpdate: (self) => {
+                    const progress = self.progress;
+                    const rotate = cardRotations[index - 1] * progress;
+                    const scale = 1 - progress * 0.05;
+                    const brightness = 1 - progress * 0.3;
+
+                    gsap.to(prev, {
+                        rotation: rotate,
+                        scale: scale,
+                        filter: `brightness(${brightness})`,
+                        overwrite: true,
+                        duration: 0.01,
+                        ease: 'none'
+                    });
+
+                    gsap.to(item, {
+                        rotation: 0,
+                        scale: 1,
+                        filter: 'brightness(1)',
+                        overwrite: true,
+                        duration: 0.01,
+                        ease: 'none'
+                    });
+                }
+            });
+        }
+
+        // 💥 Manualny snap scroll do top: 11.5rem gdy karta dojdzie do środka
         ScrollTrigger.create({
             trigger: item,
-            start: 'top top',
-            snap: 1,
-            onEnter: () => applyDepthEffects(items, index, cardRotations),
-            onEnterBack: () => applyDepthEffects(items, index, cardRotations)
+            start: 'center center',
+            end: 'bottom top',
+            onEnter: () => {
+                const targetY = window.scrollY + item.getBoundingClientRect().top - STICKY_TOP;
+                lenis.scrollTo(targetY, {
+                    duration: 0.4,
+                    easing: (t) => 1 - Math.pow(1 - t, 3)
+                });
+            }
         });
     });
 
+    // Pinned flag
     ScrollTrigger.create({
         trigger: '.services-slider',
         start: 'top top',
@@ -146,6 +186,7 @@ function initMobileStackedCards() {
         onLeaveBack: () => themeManager.setServicesPinned(false)
     });
 }
+
 
 function applyDepthEffects(items, currentIndex, rotations) {
     items.forEach((item, i) => {
@@ -171,8 +212,6 @@ function applyDepthEffects(items, currentIndex, rotations) {
         }
     });
 }
-
-
 
 // Export the pinned state for other scripts to check
 export function isServicesSectionPinned() {

@@ -51,6 +51,11 @@
     }
 
     @include mq("lap-and-up") {
+        padding-left: 5rem;
+        padding-right: 5rem;
+    }
+
+    @include mq("widescreen") {
         padding-left: 15rem;
         padding-right: 15rem;
     }

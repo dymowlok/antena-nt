@@ -137,6 +137,12 @@
         .f.f-jcsb {
             width: 100%;
             align-items: flex-end;
+
+            @media #{$pocket} {
+                flex: 1 0 auto;
+                align-items: flex-start;
+                flex-direction: column-reverse;
+            }
         }
 
         &-asset {

@@ -191,9 +191,21 @@ headerWrap.addEventListener('mouseleave', () => {
     }, 100);
 });
 
-// Initialize - POPRAWKA: ustaw gap na stałe 1rem
+// Function to handle gap styling based on screen size
+function updateHeaderGap() {
+    if (window.innerWidth >= 900) {
+        headerWrap.style.gap = '1rem';
+    } else {
+        headerWrap.style.gap = '';
+    }
+}
+
+// Initialize - POPRAWKA: ustaw gap na stałe 1rem tylko na desktop (lap-and-up breakpoint: 900px)
 initializeNavItems();
-headerWrap.style.gap = '1rem';
+updateHeaderGap();
+
+// Listen for window resize to update gap styling
+window.addEventListener('resize', updateHeaderGap);
 
 // ONLY essential CSS fixes - NO UI styling changes + REMOVED backdrop-filter
 const essentialStyles = document.createElement('style');

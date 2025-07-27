@@ -9,7 +9,7 @@
     color: $black;
     z-index: 1000;
     opacity: 0;
-    padding: 2.5rem;
+    padding: 2.5rem 1.5rem;
     width: 100%;
 
     transition:
@@ -18,15 +18,12 @@
 
     will-change: transform, opacity;
 
-    &-logo {
-        overflow: hidden;
+    @media #{$lap-and-up} {
+        padding: 2.5rem;
     }
 
-    &-hamburger {
-        @media #{$lap-and-up} {
-            display: none;
-            visibility: hidden;
-        }
+    &-logo {
+        overflow: hidden;
     }
 
     &-nav {
@@ -78,7 +75,7 @@
         gap: 2rem;
         position: relative;
         padding: 1rem 1rem 1rem 3.5rem;
-        width: max-content;
+        width: 100%;
         margin: 0 auto;
 
         transition:
@@ -86,11 +83,32 @@
             background-color 0.2s ease-in;
 
         will-change: gap, background-color;
+
+        @media #{$lap-and-up} {
+            width: max-content;
+        }
     }
 
-    // REMOVED: &-desktop-menu display: none - this was blocking the menu!
+    &-button {
+        &--contact {
+            @media #{$pocket} {
+                background-color: $black !important;
+                color: $white !important;
 
-    &-logo-text,
+                &:hover::before {
+                    background-color: rgba(255, 255, 255, 0.35) !important;
+                }
+            }
+        }
+
+        &--menu {
+            @media #{$lap-and-up} {
+                display: none;
+                visibility: hidden;
+            }
+        }
+    }
+
     .dot {
         transition:
             opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
@@ -104,6 +122,11 @@
         visibility: visible;
         position: relative;
         z-index: 1;
+
+        @media #{$pocket} {
+            display: none !important;
+            visibility: hidden;
+        }
     }
 }
 
@@ -115,23 +138,6 @@
     background-color: #88ed12;
     display: block;
     animation: dot-blink 5s infinite ease-in-out;
-}
-
-// Responsive
-@media #{$tablet} {
-    .header {
-        &-wrap {
-            gap: 1.5rem;
-        }
-    }
-}
-
-@media #{$phone} {
-    .header {
-        &-wrap {
-            gap: 1rem;
-        }
-    }
 }
 
 @keyframes dot-blink {
