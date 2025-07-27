@@ -1,0 +1,148 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+.testimonials {
+    &-wrap {
+        @media #{$lap-and-up} {
+            padding: 0 20rem;
+            overflow: hidden;
+            border-bottom: 5px solid blue;
+        }
+    }
+
+    &-row {
+        @media #{$pocket} {
+            &:nth-of-type(1),
+            &:nth-of-type(3) {
+                display: none;
+                visibility: hidden;
+            }
+        }
+
+        @media #{$lap-and-up} {
+            flex-basis: 33.33%;
+            width: 33.33%;
+
+            &:nth-of-type(1) {
+                padding-top: 6.5rem;
+            }
+            &:nth-of-type(3) {
+                padding-top: 8rem;
+            }
+        }
+    }
+
+    &-item {
+        background-color: $white;
+        border-radius: 2.5rem;
+        width: 100%;
+        padding: 2rem;
+        text-align: left;
+
+        @media #{$lap-and-up} {
+            padding: 2.5rem;
+        }
+
+        * {
+            color: $black;
+        }
+
+        &-heading {
+            width: 100%;
+        }
+
+        &-content p {
+            color: $gray;
+        }
+
+        .rating {
+            font-size: 1.8rem;
+            line-height: 1;
+            font-weight: 600;
+            letter-spacing: -0.03em;
+        }
+
+        p.name {
+            font-size: 1.5rem;
+            line-height: 0.95;
+            letter-spacing: -0.03em;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        p.location {
+            color: $gray;
+            font-size: 1.1rem;
+            line-height: 1.5;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            font-size: 1.2rem;
+            line-height: 0.95;
+            letter-spacing: -0.02em;
+            color: $white;
+            font-weight: 600;
+            padding: 0.8rem;
+            border-radius: 0.5rem;
+
+            &.antena {
+                background-color: $indigo;
+            }
+
+            &.monitoring {
+                background-color: $yellow;
+            }
+
+            &.domofon {
+                background-color: $green;
+            }
+        }
+    }
+
+    &-footer {
+        position: absolute;
+        width: 100%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(0deg, rgba(255, 96, 60, 1) 0%, rgba(255, 96, 60, 0) 100%);
+        padding: 7.5rem 2.5rem 0;
+
+        @media #{$lap-and-up} {
+            padding: 15rem 5rem 0;
+        }
+    }
+
+    &-badge {
+        padding: 1rem 1rem 1rem 2rem;
+        background-color: $light;
+        border-radius: 5rem;
+
+        @media #{$lap-and-up} {
+            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
+        }
+
+        strong span {
+            margin-left: 0.4rem;
+            @media #{$phone} {
+                display: none;
+                visibility: hidden;
+            }
+        }
+
+        p {
+            line-height: 1;
+        }
+
+        .primary {
+            font-size: 1.4rem;
+            color: $black;
+        }
+
+        .secondary {
+            font-size: 1rem;
+            color: $gray;
+        }
+    }
+}
