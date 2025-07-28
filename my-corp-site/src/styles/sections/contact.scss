@@ -1,0 +1,110 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+.contact {
+    &-wrap {
+        @media #{$lap-and-up} {
+            padding: 0 10rem;
+        }
+
+        &:has(.contact-item:hover:not(.marek):not(.hours)) {
+            .contact-item {
+                opacity: 0.5;
+
+                &:hover {
+                    opacity: 1;
+
+                    .badge {
+                        filter: brightness(1.2);
+                    }
+                }
+            }
+        }
+    }
+
+    &-item {
+        background-color: $white;
+        padding: 2.5rem 2.5rem 2.5rem 3.5rem;
+        border-radius: 5rem;
+        transition: $anim;
+
+        @media #{$lap-and-up} {
+            padding: 2.5rem 2.5rem 2.5rem 3.5rem;
+        }
+
+        &:not(.marek):not(.hours):hover {
+            filter: brightness(0.9);
+            transform: scale(1.02);
+        }
+
+        span {
+            font-size: 2rem;
+            line-height: 0.95;
+            font-weight: 750;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            padding: 1rem 1.5rem;
+            border-radius: 5rem;
+            line-height: 1;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            transition: $anim;
+        }
+
+        &.fixly .badge {
+            background-color: $gold;
+            color: $gray;
+        }
+
+        &.phone .badge {
+            background-color: $orange;
+        }
+
+        &.mail .badge {
+            background-color: $blue;
+        }
+
+        &.marek {
+            padding: 2rem 2.5rem 2rem 2rem;
+
+            @media #{$pocket} {
+                display: none;
+                visibility: hidden;
+            }
+
+            p {
+                font-size: 1.5rem;
+                line-height: 0.95;
+                font-weight: 750;
+                letter-spacing: -0.02em;
+            }
+
+            img {
+                width: 5rem;
+                height: 5rem;
+                border-radius: 50%;
+                object-fit: cover;
+                aspect-ratio: 1/1;
+            }
+        }
+
+        &.hours {
+            padding: 2.5rem 3rem;
+
+            p.black {
+                font-size: 1.5rem;
+                line-height: 0.95;
+                font-weight: 750;
+                letter-spacing: -0.02em;
+            }
+
+            p.gray {
+                font-size: 1.3rem;
+                line-height: 1.5;
+            }
+        }
+    }
+}

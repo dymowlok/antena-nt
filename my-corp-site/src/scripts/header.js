@@ -207,118 +207,7 @@ updateHeaderGap();
 // Listen for window resize to update gap styling
 window.addEventListener('resize', updateHeaderGap);
 
-// ONLY essential CSS fixes - NO UI styling changes + REMOVED backdrop-filter
-const essentialStyles = document.createElement('style');
-essentialStyles.textContent = `
-    .header-nav li.active-white-bg a.active {
-        background-color: #ffffff !important;
-        border-radius: 2.5rem;
-        color: #000;
-        transition: background-color 0.2s ease;
-    }
-    
-    .header-nav li.active-gray-bg a.active {
-        background-color: #f2f2f2 !important;
-        border-radius: 2.5rem;
-        color: #000;
-        transition: background-color 0.2s ease;
-    }
-    
-    .header-bg-overlay {
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        bottom: 0 !important;
-        width: 100vw !important;
-        height: 100vh !important;
-        background-color: rgba(0, 0, 0, 0);
-        opacity: 0;
-        visibility: hidden;
-        z-index: 998 !important;
-        transition: opacity 0.4s ease, 
-                   background-color 0.4s ease,
-                   visibility 0.4s ease;
-        pointer-events: none;
-        will-change: opacity, background-color;
-        transform: translate3d(0, 0, 0);
-    }
-    
-    .header-bg-overlay.active {
-        opacity: 1 !important;
-        visibility: visible !important;
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        pointer-events: auto !important;
-    }
-    
-    .header-desktop-menu {
-        position: fixed !important;
-        top: 1.25rem !important;
-        left: 50% !important;
-        transform: translateX(-50%) translateY(-10px) !important;
-        width: auto;
-        min-width: 600px;
-        max-width: 800px;
-        background-color: #ffffff;
-        border-radius: 1.5rem;
-        padding: 1.25rem;
-        padding-top: calc(1.25rem + 60px + 1.25rem);
-        opacity: 0;
-        visibility: hidden;
-        z-index: 999 !important;
-        transition: opacity 0.3s ease, 
-                   visibility 0.3s ease, 
-                   transform 0.3s ease;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-        pointer-events: none;
-        will-change: transform, opacity;
-    }
-    
-    .header-desktop-menu.active {
-        opacity: 1 !important;
-        visibility: visible !important;
-        transform: translateX(-50%) translateY(0) !important;
-        pointer-events: auto !important;
-    }
-    
-    .header-desktop-menu-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        align-items: start;
-    }
-    
-    .header-desktop-menu-column {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .header-desktop-menu-column a {
-        padding: 1rem 1.5rem;
-        border-radius: 1rem;
-        color: #000;
-        text-decoration: none;
-        font-size: 1.4rem;
-        font-weight: 500;
-        transition: background-color 0.2s ease, transform 0.2s ease;
-        will-change: background-color, transform;
-    }
-    
-    .header-desktop-menu-column a:hover {
-        background-color: #f2f2f2;
-        transform: translateX(4px);
-    }
-    
-    .header-wrap {
-        z-index: 1000 !important;
-    }
-    
-    body.scroll-locked {
-        overflow: hidden !important;
-    }
-`;
-document.head.appendChild(essentialStyles);
+
 
 // Header initialization - SINGLE ANIMATION ONLY
 let headerAnimationTriggered = false;
@@ -354,7 +243,7 @@ async function initializeHeader() {
                     top: '0',
                     transform: 'translateX(-50%) translateY(0)',
                     visibility: 'visible',
-                    duration: 0.5,
+                    duration: 0.3,
                     ease: 'power2.out',
                     onComplete: () => {
                         headerState = HeaderStateManager.states.HERO;
@@ -363,7 +252,7 @@ async function initializeHeader() {
                 }
             );
         }
-    }, 1000); // Show header after 1 second
+    }, 200); // Show header after 1 second
 }
 
 initializeHeader();

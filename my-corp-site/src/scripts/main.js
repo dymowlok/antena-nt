@@ -177,17 +177,22 @@ import { setupBlurFadeIn, reinitializeBlurFadeIn } from './blurFadeIn.js';
 // Setup blur fade-in animations
 setupBlurFadeIn();
 
-// Add resize handler for blur fade-in
+// Add resize handler for blur fade-in and testimonials
 let resizeTimeout;
 window.addEventListener('resize', () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
         reinitializeBlurFadeIn();
+        reinitializeTestimonialsAnimations();
     }, 300);
 });
 
 import { setupServicesSection } from './servicesSection.js';
 setupServicesSection();
+
+// Testimonials animations
+import { setupTestimonialsAnimations, reinitializeTestimonialsAnimations } from './testimonials.js';
+setupTestimonialsAnimations();
 
 // Import desktopMenu to make updateActiveNavStyling available
 import './desktopMenu.js';

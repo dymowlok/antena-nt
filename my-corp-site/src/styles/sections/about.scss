@@ -5,14 +5,7 @@
     display: flex;
     justify-content: space-between;
     gap: 5rem;
-    padding-top: 7.5rem;
-    padding-bottom: 7.5rem;
     height: calc(300vh + 15rem);
-
-    @media #{$lap-and-up} {
-        padding-top: 15rem;
-        padding-bottom: 15rem;
-    }
 
     h2 {
         @media #{$lap-and-up} {

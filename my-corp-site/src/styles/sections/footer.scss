@@ -1,0 +1,16 @@
+@use "../abstracts/variables" as *;
+@use "../abstracts/colors" as *;
+
+.footer {
+    background-color: $black;
+    border-radius: 3.5rem 3.5rem 0 0;
+
+    a,
+    p {
+        &.gray {
+            font-size: 1.5rem;
+            line-height: 1.4;
+            letter-spacing: -0.02em;
+        }
+    }
+}

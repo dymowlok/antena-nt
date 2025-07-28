@@ -6,7 +6,9 @@
         @media #{$lap-and-up} {
             padding: 0 20rem;
             overflow: hidden;
-            border-bottom: 5px solid blue;
+            // height: 90vh;
+            // flex: 1 0 auto;
+            max-height: 90%;
         }
     }
 
@@ -38,9 +40,28 @@
         width: 100%;
         padding: 2rem;
         text-align: left;
+        will-change: opacity, transform;
+        transform: translateZ(0);
+        pointer-events: none;
+
+        @media #{$pocket} {
+            width: calc(100% - 5rem);
+
+            &:nth-of-type(odd) {
+                margin-left: 5rem;
+            }
+
+            &:nth-of-type(even) {
+                margin-right: 5rem;
+            }
+        }
 
         @media #{$lap-and-up} {
             padding: 2.5rem;
+        }
+
+        & > * {
+            pointer-events: none;
         }
 
         * {
@@ -106,30 +127,37 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(0deg, rgba(255, 96, 60, 1) 0%, rgba(255, 96, 60, 0) 100%);
-        padding: 7.5rem 2.5rem 0;
+        background: linear-gradient(0deg, rgba(255, 96, 60, 1) 50%, rgba(255, 96, 60, 0) 100%);
+        padding: 10rem 2.5rem;
+        will-change: opacity, transform;
+        transform: translateZ(0); // Force hardware acceleration
 
         @media #{$lap-and-up} {
-            padding: 15rem 5rem 0;
+            padding: 15rem 5rem;
+        }
+
+        .f.f-col.f-g35.f-cc {
+            p {
+                font-size: 2.5rem;
+                line-height: 0.95;
+                font-weight: 700;
+                text-align: center;
+
+                @media #{$pocket} {
+                    max-width: 60vw;
+                }
+
+                @media #{$lap-and-up} {
+                    font-size: 3.5rem;
+                }
+            }
         }
     }
 
     &-badge {
-        padding: 1rem 1rem 1rem 2rem;
-        background-color: $light;
-        border-radius: 5rem;
-
-        @media #{$lap-and-up} {
-            padding: 1.5rem 1.5rem 1.5rem 2.5rem;
-        }
-
-        strong span {
-            margin-left: 0.4rem;
-            @media #{$phone} {
-                display: none;
-                visibility: hidden;
-            }
-        }
+        padding: 1.5rem;
+        background-color: $white;
+        border-radius: 1.5rem;
 
         p {
             line-height: 1;
@@ -138,6 +166,7 @@
         .primary {
             font-size: 1.4rem;
             color: $black;
+            font-weight: 500;
         }
 
         .secondary {
