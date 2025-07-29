@@ -2,6 +2,8 @@
 @use "../abstracts/colors" as *;
 
 .testimonials {
+    position: relative;
+
     &-wrap {
         @media #{$lap-and-up} {
             padding: 0 20rem;
