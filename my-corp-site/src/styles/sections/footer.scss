@@ -13,4 +13,12 @@
             letter-spacing: -0.02em;
         }
     }
+
+    a {
+        transition: $anim;
+
+        &:hover {
+            color: $white;
+        }
+    }
 }

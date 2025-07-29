@@ -3,6 +3,8 @@
 
 .contact {
     &-wrap {
+        width: 100%;
+
         @media #{$lap-and-up} {
             padding: 0 10rem;
         }
@@ -52,6 +54,11 @@
             font-weight: 600;
             letter-spacing: -0.02em;
             transition: $anim;
+
+            @media #{$pocket} {
+                display: none;
+                visibility: hidden;
+            }
         }
 
         &.fixly .badge {
@@ -94,6 +101,14 @@
         &.hours {
             padding: 2.5rem 3rem;
 
+            @media #{$pocket} {
+                border-radius: 3.5rem;
+            }
+
+            p {
+                text-align: left;
+            }
+
             p.black {
                 font-size: 1.5rem;
                 line-height: 0.95;
@@ -104,6 +119,13 @@
             p.gray {
                 font-size: 1.3rem;
                 line-height: 1.5;
+
+                br {
+                    @media #{$lap-and-up} {
+                        display: none;
+                        visibility: hidden;
+                    }
+                }
             }
         }
     }

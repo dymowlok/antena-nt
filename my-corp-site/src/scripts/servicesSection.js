@@ -175,7 +175,8 @@ function initMobileStackedCards() {
         });
     });
 
-    // Pinned flag
+    // MOBILE PINNING DISABLED - Comment out the pinning functionality for mobile
+    /*
     ScrollTrigger.create({
         trigger: '.services-slider',
         start: 'top top',
@@ -185,8 +186,8 @@ function initMobileStackedCards() {
         onLeave: () => themeManager.setServicesPinned(false),
         onLeaveBack: () => themeManager.setServicesPinned(false)
     });
+    */
 }
-
 
 function applyDepthEffects(items, currentIndex, rotations) {
     items.forEach((item, i) => {

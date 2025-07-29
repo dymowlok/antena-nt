@@ -74,6 +74,9 @@
             &:nth-of-type(8) {
                 z-index: 9 !important;
             }
+            &:nth-of-type(9) {
+                z-index: 10 !important;
+            }
         }
 
         @media #{$lap-and-up} {
@@ -157,8 +160,14 @@
             height: 10rem;
             max-height: 10rem;
             min-height: 10rem;
-            background-color: blue;
-            border-radius: calc(2.5rem * 0.5);
+            overflow: visible;
+            // border-radius: calc(2.5rem * 0.5);
+
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
     }
 }
