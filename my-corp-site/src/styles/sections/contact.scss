@@ -20,6 +20,11 @@
                         filter: brightness(1.2);
                     }
                 }
+
+                &.marek,
+                &.hours {
+                    opacity: 1;
+                }
             }
         }
     }
@@ -54,6 +59,10 @@
             font-weight: 600;
             letter-spacing: -0.02em;
             transition: $anim;
+
+            &:hover {
+                filter: brightness(0.9) !important;
+            }
 
             @media #{$pocket} {
                 display: none;

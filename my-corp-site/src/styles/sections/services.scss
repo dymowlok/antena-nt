@@ -2,7 +2,7 @@
 @use "../abstracts/colors" as *;
 
 .services {
-    padding: 7.5rem 2.5rem;
+    padding: 11.75rem 2.5rem 7.5rem;
     height: max-content;
 
     @media #{$lap-and-up} {

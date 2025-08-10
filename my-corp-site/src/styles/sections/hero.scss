@@ -9,6 +9,11 @@
 
         @media #{$phone} {
             max-width: 31.5rem;
+
+            span {
+                display: none;
+                visibility: hidden;
+            }
         }
     }
 
@@ -21,6 +26,11 @@
         padding-top: 15rem;
         width: 100%;
         position: relative;
+
+        @media #{$pocket} {
+            height: 100vh;
+            min-height: 65rem;
+        }
     }
 
     &-buttons,

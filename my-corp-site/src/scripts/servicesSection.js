@@ -166,6 +166,9 @@ function initMobileStackedCards() {
             start: 'center center',
             end: 'bottom top',
             onEnter: () => {
+                // Don't interfere with any hash navigation or mobile navigation
+                if (window.mobileNavNavigating || window.hashNavigating || window.location.hash) return;
+
                 const targetY = window.scrollY + item.getBoundingClientRect().top - STICKY_TOP;
                 lenis.scrollTo(targetY, {
                     duration: 0.4,

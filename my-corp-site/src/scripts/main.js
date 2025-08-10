@@ -11,8 +11,17 @@ loadHeroLottie();
 import { setupAboutSection } from './about.js';
 setupAboutSection();
 
-// Import unified header manager
+// Import unified header manager - this will handle all header functionality
 import headerManager from './unifiedHeaderManager.js';
+
+// Import mobile navigation manager
+import mobileNavManager from './mobileNavManager.js';
+
+// Import navigation interceptor to prevent services section interference
+import navigationInterceptor from './navigationInterceptor.js';
+
+// Set mobile nav manager reference in header manager
+headerManager.setMobileNavManager(mobileNavManager);
 
 // Blur fade-in functionality
 import { setupBlurFadeIn, reinitializeBlurFadeIn } from './blurFadeIn.js';
