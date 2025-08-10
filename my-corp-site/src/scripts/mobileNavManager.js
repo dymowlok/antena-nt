@@ -326,6 +326,7 @@ class MobileNavManager {
         if (this.isOpen) return;
 
         this.isOpen = true;
+        document.documentElement.classList.add('mobile-nav-open');
         this.body.classList.add('mobile-nav-open');
         this.mobileNav.classList.add('active');
 
@@ -355,6 +356,7 @@ class MobileNavManager {
         if (!this.isOpen) return;
 
         this.isOpen = false;
+        document.documentElement.classList.remove('mobile-nav-open');
         this.body.classList.remove('mobile-nav-open');
 
         // Update button text
